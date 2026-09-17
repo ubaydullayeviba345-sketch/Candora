@@ -120,21 +120,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const loadUserData = async (currentUser: User) => {
+    const metadata = currentUser.user_metadata ?? {};
+    const metadataName = String(metadata.full_name ?? metadata.name ?? metadata.user_name ?? "").trim();
+    const nameParts = metadataName ? metadataName.split(/\s+/) : [];
+    const fallbackProfile: ProfileData = {
+      firstName: String(metadata.firstName ?? nameParts[0] ?? ""),
+      lastName: String(metadata.lastName ?? nameParts.slice(1).join(" ")),
+      phone: String(metadata.phone ?? "+998 "),
+      email: currentUser.email ?? "",
+      avatar: String(metadata.avatar ?? metadata.picture ?? ""),
+    };
     const [profileRes, cartRes] = await Promise.allSettled([
       api.getProfile(currentUser.id),
       api.getCart(currentUser.id),
     ]);
     if (profileRes.status === "fulfilled" && profileRes.value?.profile) {
-      setProfile(profileRes.value.profile);
-    } else if (currentUser.user_metadata?.firstName) {
-      setProfile({
-        firstName: currentUser.user_metadata.firstName,
-        lastName: currentUser.user_metadata.lastName ?? "",
-        phone: currentUser.user_metadata.phone ?? "+998 ",
-        email: currentUser.email ?? "",
-        avatar: currentUser.user_metadata.avatar,
-      });
-    }
+      setProfile({ ...fallbackProfile, ...profileRes.value.profile });
+    } else setProfile(fallbackProfile);
     if (cartRes.status === "fulfilled" && cartRes.value?.items) {
       setCartItems(cartRes.value.items);
     }
@@ -273,6 +275,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (!user) return;
     const updated = { ...profile, ...data } as ProfileData;
     setProfile(updated);
+    await supabase.auth.updateUser({
+      data: { firstName: updated.firstName, lastName: updated.lastName, phone: updated.phone, avatar: updated.avatar },
+    });
     await api.saveProfile(user.id, updated);
   };
 

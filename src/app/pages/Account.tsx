@@ -167,7 +167,7 @@ export default function Account() {
               )}
             </div>
 
-            <div className="p-6 space-y-5">
+            <div className="p-4 sm:p-5 space-y-4">
               <div className="grid sm:grid-cols-2 gap-5">
                 {[
                   { label: t.account.firstName, key: "firstName" as const },
