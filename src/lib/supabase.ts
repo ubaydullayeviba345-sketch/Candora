@@ -55,4 +55,5 @@ export const api = {
     method: "POST",
     body: JSON.stringify(order),
   }),
+  getAdminOverview: async () => request("/admin/overview"),
 };

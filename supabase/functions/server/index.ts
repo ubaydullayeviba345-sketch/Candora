@@ -39,8 +39,36 @@ const requireUser = async (c: Context) => {
   return userId;
 };
 
+const requireAdmin = async (c: Context) => {
+  const authorization = c.req.header("Authorization");
+  if (!authorization?.startsWith("Bearer ")) return c.json({ error: "Authentication required" }, 401);
+
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
+  const adminEmail = Deno.env.get("ADMIN_EMAIL")?.toLowerCase();
+  if (!supabaseUrl || !anonKey || !adminEmail) return c.json({ error: "Admin access is not configured" }, 503);
+
+  const { createClient } = await import("jsr:@supabase/supabase-js@2");
+  const auth = createClient(supabaseUrl, anonKey, {
+    global: { headers: { Authorization: authorization } },
+  });
+  const { data: { user } } = await auth.auth.getUser();
+  if (!user || user.email?.toLowerCase() !== adminEmail) return c.json({ error: "Admin access required" }, 403);
+  return user;
+};
+
 // Health check
 app.get(`${BASE}/health`, (c) => c.json({ status: "ok" }));
+
+app.get(`${BASE}/admin/overview`, async (c) => {
+  const admin = await requireAdmin(c);
+  if (typeof admin !== "object" || !admin) return admin;
+  const [profiles, orders] = await Promise.all([
+    kv.getByPrefix("profile:"),
+    kv.getByPrefix("order:"),
+  ]);
+  return c.json({ users: profiles.length, orders: orders.length });
+});
 
 // ── Profile ──────────────────────────────────────────────────────────────────
 
