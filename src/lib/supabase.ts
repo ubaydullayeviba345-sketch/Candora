@@ -1,8 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 
-const PROJECT_ID = "rxzrtqxvbcuhpqxwyxaj";
+const PROJECT_ID = "lvluoarlzrhiqtriphbm";
 const ANON_KEY =
-  "sb_publishable_XWQNtLjiao1Zeb-k5WuL2g_ZVyRVcIp";
+  "sb_publishable_53MLGGZx_i3H38XZ8kXX9Q_yLcur3_d";
 
 const SUPABASE_URL = `https://${PROJECT_ID}.supabase.co`;
 export const API_BASE = `${SUPABASE_URL}/functions/v1/server`;
