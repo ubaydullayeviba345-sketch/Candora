@@ -40,7 +40,7 @@ export default function Admin() {
       <main className="min-h-screen bg-background text-foreground flex items-center justify-center px-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,hsl(var(--primary)/.2),transparent_42%)]" />
         <form onSubmit={handleLogin} className="relative w-full max-w-md bg-card border border-border rounded-3xl p-7 shadow-2xl">
-          <div className="flex items-center gap-3 mb-8"><img src="/candora-logo.jpg" alt="Candora" className="h-10 w-10 object-cover" /><div><p className="font-display text-xl font-bold">Admin</p><p className="text-xs text-muted-foreground">Boshqaruv paneliga kirish</p></div></div>
+          <div className="flex items-center gap-3 mb-8"><img src="/candora-wordmark.png" alt="Candora" className="h-10 w-[158px] object-contain object-left" /><div><p className="font-display text-xl font-bold">Admin</p><p className="text-xs text-muted-foreground">Boshqaruv paneliga kirish</p></div></div>
           {error && <div className="mb-4 px-4 py-3 rounded-xl bg-destructive/10 text-destructive text-sm">{error}</div>}
           <label className="block text-xs text-muted-foreground mb-1.5">Admin email</label>
           <input autoFocus type="email" value={email} onChange={(event) => setEmail(event.target.value)} className="w-full px-4 py-3 rounded-xl bg-muted border border-border outline-none focus:border-primary mb-4" />
@@ -56,7 +56,7 @@ export default function Admin() {
     <main className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border bg-card/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3"><img src="/candora-logo.jpg" alt="Candora" className="h-9 w-9 object-cover" /><div><p className="font-display text-xl font-bold">Admin</p><p className="text-xs text-muted-foreground">Boshqaruv markazi</p></div></div>
+          <div className="flex items-center gap-3"><img src="/candora-wordmark.png" alt="Candora" className="h-9 w-[142px] object-contain object-left" /><div><p className="font-display text-xl font-bold">Admin</p><p className="text-xs text-muted-foreground">Boshqaruv markazi</p></div></div>
           <button onClick={() => { void supabase.auth.signOut(); setAuthenticated(false); }} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-destructive"><LogOut size={15} /> Chiqish</button>
         </div>
       </header>
