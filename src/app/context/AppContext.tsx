@@ -12,6 +12,7 @@ export interface ProfileData {
   lastName: string;
   phone: string;
   email: string;
+  avatar?: string;
 }
 
 export interface Order {
@@ -131,6 +132,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         lastName: currentUser.user_metadata.lastName ?? "",
         phone: currentUser.user_metadata.phone ?? "+998 ",
         email: currentUser.email ?? "",
+        avatar: currentUser.user_metadata.avatar,
       });
     }
     if (cartRes.status === "fulfilled" && cartRes.value?.items) {

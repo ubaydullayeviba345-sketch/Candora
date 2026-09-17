@@ -75,9 +75,9 @@ app.get(`${BASE}/admin/overview`, async (c) => {
 app.post(`${BASE}/profile`, async (c) => {
   const userId = await requireUser(c);
   if (typeof userId !== "string") return userId;
-  const { firstName, lastName, phone, email } = await c.req.json();
+  const { firstName, lastName, phone, email, avatar } = await c.req.json();
   await kv.set(`profile:${userId}`, {
-    firstName, lastName, phone, email,
+    firstName, lastName, phone, email, avatar,
     updatedAt: new Date().toISOString(),
   });
   return c.json({ success: true });

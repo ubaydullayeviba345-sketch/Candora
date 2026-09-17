@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router";
 import { motion } from "motion/react";
-import { User, ShoppingBag, Edit2, Check, X, LogOut, Loader2 } from "lucide-react";
+import { User, ShoppingBag, Edit2, Check, X, LogOut, Loader2, Camera } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { useT } from "../../lib/i18n";
 import { formatPhone } from "../../lib/data";
@@ -17,11 +17,16 @@ export default function Account() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordMessage, setPasswordMessage] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [avatarOpen, setAvatarOpen] = useState(false);
+  const [avatar, setAvatar] = useState("");
   const [form, setForm] = useState({ firstName: "", lastName: "", phone: "+998 " });
 
   useEffect(() => {
-    if (profile) setForm({ firstName: profile.firstName, lastName: profile.lastName, phone: profile.phone });
-  }, [profile]);
+    if (profile) {
+      setForm({ firstName: profile.firstName, lastName: profile.lastName, phone: profile.phone });
+      setAvatar(profile.avatar ?? localStorage.getItem(`candora_avatar:${user?.id}`) ?? "");
+    }
+  }, [profile, user?.id]);
 
   useEffect(() => { fetchOrders(); }, []);
 
@@ -30,7 +35,7 @@ export default function Account() {
 
   const handleSave = async () => {
     setSaving(true);
-    await updateProfile(form);
+    await updateProfile({ ...form, avatar });
     setSaving(false);
     setEditing(false);
   };
@@ -59,6 +64,27 @@ export default function Account() {
     }
   };
 
+  const avatarOptions = [
+    "https://api.dicebear.com/9.x/adventurer/svg?seed=CandoraMan",
+    "https://api.dicebear.com/9.x/lorelei/svg?seed=CandoraWoman",
+    "https://api.dicebear.com/9.x/notionists/svg?seed=CandoraHijab",
+    "https://api.dicebear.com/9.x/bottts/svg?seed=CandoraBot",
+  ];
+
+  const handleAvatarUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const image = String(reader.result);
+      setAvatar(image);
+      localStorage.setItem(`candora_avatar:${user.id}`, image);
+      setAvatarOpen(false);
+      void updateProfile({ avatar: image });
+    };
+    reader.readAsDataURL(file);
+  };
+
   const statusColors: Record<string, string> = {
     pending: "bg-amber-500/15 text-amber-600 dark:text-amber-400",
     processing: "bg-blue-500/15 text-blue-600 dark:text-blue-400",
@@ -72,8 +98,8 @@ export default function Account() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-1">Dashboard</p>
-            <h1 className="font-display text-3xl font-bold">{t.account.title}</h1>
+            <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-1">{t.account.profile}</p>
+            <h1 className="font-display text-3xl font-bold">{t.account.profile}</h1>
           </div>
           <button onClick={logout} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-destructive transition-colors">
             <LogOut size={15} /> {t.account.logout}
@@ -82,15 +108,28 @@ export default function Account() {
 
         {/* User info card */}
         <div className="bg-card border border-border rounded-2xl p-5 mb-6 flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center text-primary text-xl font-bold flex-shrink-0">
-            {profile?.firstName?.[0] ?? user.email?.[0]?.toUpperCase() ?? "U"}
-          </div>
+          <button type="button" onClick={() => setAvatarOpen(true)} className="relative w-16 h-16 rounded-2xl bg-primary/20 overflow-hidden flex items-center justify-center text-primary text-xl font-bold flex-shrink-0 group" aria-label="Change avatar">
+            {avatar ? <img src={avatar} alt="Profile avatar" className="w-full h-full object-cover" /> : (profile?.firstName?.[0] ?? user.email?.[0]?.toUpperCase() ?? "U")}
+            <span className="absolute inset-0 bg-black/50 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"><Camera size={16} /></span>
+          </button>
           <div>
             <p className="font-semibold text-base">{profile?.firstName} {profile?.lastName}</p>
             <p className="text-sm text-muted-foreground">{user.email}</p>
             {profile?.phone && <p className="text-xs text-muted-foreground mt-0.5">{profile.phone}</p>}
           </div>
         </div>
+
+        {avatarOpen && (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setAvatarOpen(false)}>
+            <div className="w-full max-w-lg bg-card border border-border rounded-3xl p-6 shadow-2xl" onClick={event => event.stopPropagation()}>
+              <div className="flex items-center justify-between mb-5"><div><h2 className="font-semibold">Avatar tanlang</h2><p className="text-xs text-muted-foreground mt-1">To‘rt xil uslubdan birini tanlang yoki o‘z rasmingizni yuklang.</p></div><button type="button" onClick={() => setAvatarOpen(false)} className="w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center"><X size={16} /></button></div>
+              <div className="grid grid-cols-4 gap-3">
+                {avatarOptions.map((option, index) => <button type="button" key={option} onClick={() => { setAvatar(option); localStorage.setItem(`candora_avatar:${user.id}`, option); setAvatarOpen(false); void updateProfile({ avatar: option }); }} className={`aspect-square rounded-2xl overflow-hidden border-2 ${avatar === option ? "border-primary" : "border-border hover:border-primary/60"}`}><img src={option} alt={`Avatar ${index + 1}`} className="w-full h-full object-cover" /></button>)}
+              </div>
+              <label className="mt-5 flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-dashed border-border hover:border-primary hover:text-primary cursor-pointer text-sm font-medium transition-colors"><Camera size={16} /> O‘z rasmimni yuklash<input type="file" accept="image/png,image/jpeg,image/webp" onChange={handleAvatarUpload} className="hidden" /></label>
+            </div>
+          </div>
+        )}
 
         {/* Tabs */}
         <div className="flex gap-1 bg-muted rounded-xl p-1 mb-8 w-fit">

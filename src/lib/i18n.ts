@@ -88,7 +88,7 @@ const en = {
     orderId: "Order ID",
   },
   account: {
-    title: "My Account", profile: "Profile", orders: "My Orders",
+    title: "Profile", profile: "Profile", orders: "My Orders",
     editProfile: "Edit Profile", save: "Save Changes", cancel: "Cancel",
     password: "Password", newPassword: "New password", confirmPassword: "Confirm password",
     updatePassword: "Update password", passwordUpdated: "Password updated.",
@@ -229,7 +229,7 @@ const uz: typeof en = {
     orderId: "Buyurtma ID",
   },
   account: {
-    title: "Mening Kabinetim", profile: "Profil", orders: "Buyurtmalarim",
+    title: "Profil", profile: "Profil", orders: "Buyurtmalarim",
     editProfile: "Profilni Tahrirlash", save: "Saqlash", cancel: "Bekor qilish",
     password: "Parol", newPassword: "Yangi parol", confirmPassword: "Parolni tasdiqlang",
     updatePassword: "Parolni yangilash", passwordUpdated: "Parol yangilandi.",
@@ -370,7 +370,7 @@ const ru: typeof en = {
     orderId: "Номер Заказа",
   },
   account: {
-    title: "Мой Аккаунт", profile: "Профиль", orders: "Мои Заказы",
+    title: "Профиль", profile: "Профиль", orders: "Мои Заказы",
     editProfile: "Редактировать Профиль", save: "Сохранить", cancel: "Отмена",
     password: "Пароль", newPassword: "Новый пароль", confirmPassword: "Подтвердите пароль",
     updatePassword: "Обновить пароль", passwordUpdated: "Пароль обновлён.",
