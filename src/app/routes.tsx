@@ -6,8 +6,10 @@ import About from "./pages/About";
 import Collections from "./pages/Collections";
 import CustomOrders from "./pages/CustomOrders";
 import NotFound from "./pages/NotFound";
+import Admin from "./pages/Admin";
 
 export const router = createBrowserRouter([
+  { path: "/admin/io", Component: Admin },
   {
     path: "/",
     Component: Layout,

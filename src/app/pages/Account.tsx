@@ -8,15 +8,15 @@ import { formatPhone } from "../../lib/data";
 
 export default function Account() {
   const { user, profile, lang, loadingAuth, updateProfile, logout, fetchOrders, orders } = useApp();
-    const { updatePassword } = useApp();
+  const { updatePassword } = useApp();
   const t = useT(lang);
   const [tab, setTab] = useState<"profile" | "orders">("profile");
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
-    const [newPassword, setNewPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [passwordMessage, setPasswordMessage] = useState("");
-    const [passwordError, setPasswordError] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordMessage, setPasswordMessage] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [form, setForm] = useState({ firstName: "", lastName: "", phone: "+998 " });
 
   useEffect(() => {
@@ -25,7 +25,6 @@ export default function Account() {
 
   useEffect(() => { fetchOrders(); }, []);
 
-  if (!user) return <Navigate to="/" replace />;
   if (loadingAuth) return <div className="min-h-screen pt-24 text-center text-muted-foreground">{t.common.loading}</div>;
   if (!user) return <Navigate to="/" replace />;
 
@@ -37,27 +36,27 @@ export default function Account() {
   };
 
   const handlePhoneChange = (v: string) => {
-
-      const handlePasswordSave = async () => {
-        setPasswordError(""); setPasswordMessage("");
-        if (newPassword.length < 6) {
-          setPasswordError(t.account.passwordMin);
-          return;
-        }
-        if (newPassword !== confirmPassword) {
-          setPasswordError(t.account.passwordMismatch);
-          return;
-        }
-        const result = await updatePassword(newPassword);
-        if (result.error) setPasswordError(result.error);
-        else {
-          setNewPassword(""); setConfirmPassword("");
-          setPasswordMessage(t.account.passwordUpdated);
-        }
-      };
     if (!v.startsWith("+998")) { setForm(f => ({ ...f, phone: "+998 " })); return; }
     const after = v.slice(4).replace(/\D/g, "");
     setForm(f => ({ ...f, phone: formatPhone(after) }));
+  };
+
+  const handlePasswordSave = async () => {
+    setPasswordError(""); setPasswordMessage("");
+    if (newPassword.length < 6) {
+      setPasswordError(t.account.passwordMin);
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError(t.account.passwordMismatch);
+      return;
+    }
+    const result = await updatePassword(newPassword);
+    if (result.error) setPasswordError(result.error);
+    else {
+      setNewPassword(""); setConfirmPassword("");
+      setPasswordMessage(t.account.passwordUpdated);
+    }
   };
 
   const statusColors: Record<string, string> = {

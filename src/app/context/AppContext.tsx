@@ -50,7 +50,8 @@ interface AppActions {
   resetPassword: (email: string) => Promise<{ error?: string }>;
   updatePassword: (password: string) => Promise<{ error?: string }>;
   loginWithGoogle: () => Promise<{ error?: string }>;
-  loginWithApple: () => Promise<{ error?: string }>;
+  loginWithFacebook: () => Promise<{ error?: string }>;
+  loginWithDiscord: () => Promise<{ error?: string }>;
   logout: () => Promise<void>;
   addToCart: (product: Product) => void;
   removeFromCart: (id: number) => void;
@@ -207,9 +208,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return error ? { error: error.message } : {};
   };
 
-  const loginWithApple = async () => {
+  const loginWithFacebook = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: "apple",
+      provider: "facebook",
+      options: { redirectTo: window.location.origin },
+    });
+    return error ? { error: error.message } : {};
+  };
+
+  const loginWithDiscord = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "discord",
       options: { redirectTo: window.location.origin },
     });
     return error ? { error: error.message } : {};
@@ -289,7 +298,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       user, profile, cartItems, dark, lang, authOpen, authTab,
       cartOpen, orders, loadingAuth,
       setDark, setLang, openAuth, closeAuth, setCartOpen,
-        login, register, resetPassword, updatePassword, loginWithGoogle, loginWithApple, logout,
+        login, register, resetPassword, updatePassword, loginWithGoogle, loginWithFacebook, loginWithDiscord, logout,
       addToCart, removeFromCart, updateQty, clearCart,
       updateProfile, fetchOrders, placeOrder,
     }}>

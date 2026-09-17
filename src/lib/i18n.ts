@@ -56,7 +56,7 @@ const en = {
     firstName: "First Name", lastName: "Last Name",
     phone: "Phone Number", phonePlaceholder: "+998 __ ___ __ __",
     loginBtn: "Sign In", registerBtn: "Create Account",
-    orWith: "or continue with", google: "Google", apple: "Apple",
+    orWith: "or continue with", google: "Google", facebook: "Facebook", discord: "Discord",
     noAccount: "Don't have an account?", haveAccount: "Already have an account?",
     signUp: "Sign up", signIn: "Sign in",
     errorInvalid: "Invalid email or password.",
@@ -143,7 +143,7 @@ const en = {
 const uz: typeof en = {
   nav: {
     catalog: "Katalog", collections: "Kolleksiyalar", customOrders: "Maxsus Buyurtmalar",
-    about: "Biz Haqimizda", account: "Kabinet", login: "Kirish", logout: "Chiqish",
+    about: "Biz Haqimizda", account: "Profil", login: "Kirish", logout: "Chiqish",
   },
   hero: {
     badge: "Artisan Hashamatli Shirinliklar", title1: "Shirinlik", title2: "Hashamati,",
@@ -197,7 +197,7 @@ const uz: typeof en = {
     firstName: "Ism", lastName: "Familya",
     phone: "Telefon Raqam", phonePlaceholder: "+998 __ ___ __ __",
     loginBtn: "Kirish", registerBtn: "Ro'yxatdan O'tish",
-    orWith: "yoki davom eting", google: "Google", apple: "Apple",
+    orWith: "yoki davom eting", google: "Google", facebook: "Facebook", discord: "Discord",
     noAccount: "Hisobingiz yo'qmi?", haveAccount: "Hisobingiz bormi?",
     signUp: "Ro'yxatdan o'ting", signIn: "Kiring",
     errorInvalid: "Email yoki parol noto'g'ri.",
@@ -338,7 +338,7 @@ const ru: typeof en = {
     firstName: "Имя", lastName: "Фамилия",
     phone: "Номер Телефона", phonePlaceholder: "+998 __ ___ __ __",
     loginBtn: "Войти", registerBtn: "Создать Аккаунт",
-    orWith: "или продолжить через", google: "Google", apple: "Apple",
+    orWith: "или продолжить через", google: "Google", facebook: "Facebook", discord: "Discord",
     noAccount: "Нет аккаунта?", haveAccount: "Уже есть аккаунт?",
     signUp: "Зарегистрируйтесь", signIn: "Войдите",
     errorInvalid: "Неверный email или пароль.",
