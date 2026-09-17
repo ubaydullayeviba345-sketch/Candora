@@ -122,11 +122,11 @@ export default function Account() {
         {avatarOpen && (
           <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setAvatarOpen(false)}>
             <div className="w-full max-w-lg bg-card border border-border rounded-3xl p-6 shadow-2xl" onClick={event => event.stopPropagation()}>
-              <div className="flex items-center justify-between mb-5"><div><h2 className="font-semibold">Avatar tanlang</h2><p className="text-xs text-muted-foreground mt-1">To‘rt xil uslubdan birini tanlang yoki o‘z rasmingizni yuklang.</p></div><button type="button" onClick={() => setAvatarOpen(false)} className="w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center"><X size={16} /></button></div>
+              <div className="flex items-center justify-between mb-5"><div><h2 className="font-semibold">Avatar tanlang</h2><p className="text-xs text-muted-foreground mt-1">Avatarni tanlang yoki fayldan yuklang.</p></div><button type="button" onClick={() => setAvatarOpen(false)} className="w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center"><X size={16} /></button></div>
               <div className="grid grid-cols-4 gap-3">
                 {avatarOptions.map((option, index) => <button type="button" key={option} onClick={() => { setAvatar(option); localStorage.setItem(`candora_avatar:${user.id}`, option); setAvatarOpen(false); void updateProfile({ avatar: option }); }} className={`aspect-square rounded-2xl overflow-hidden border-2 ${avatar === option ? "border-primary" : "border-border hover:border-primary/60"}`}><img src={option} alt={`Avatar ${index + 1}`} className="w-full h-full object-cover" /></button>)}
               </div>
-              <label className="mt-5 flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-dashed border-border hover:border-primary hover:text-primary cursor-pointer text-sm font-medium transition-colors"><Camera size={16} /> O‘z rasmimni yuklash<input type="file" accept="image/png,image/jpeg,image/webp" onChange={handleAvatarUpload} className="hidden" /></label>
+              <label className="mt-5 flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-dashed border-border hover:border-primary hover:text-primary cursor-pointer text-sm font-medium transition-colors"><Camera size={16} /> Fayldan yuklash<input type="file" accept="image/png,image/jpeg,image/webp" onChange={handleAvatarUpload} className="hidden" /></label>
             </div>
           </div>
         )}
