@@ -59,10 +59,7 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
       <div className="relative min-h-screen max-w-6xl mx-auto px-6 py-8 flex flex-col">
         <header className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="h-10 w-[166px] flex items-center gap-2 rounded-lg border border-primary/60 bg-black/80 px-1.5">
-              <img src="/candora-logo.jpg" alt="Candora" className="h-8 w-8 object-cover" />
-              <span className="font-display text-xl font-bold text-[#f4ead7]">Candora</span>
-            </div>
+            <img src="/candora-logo.jpg" alt="Candora" className="h-10 w-10 object-cover" />
           </div>
           <div className="flex items-center gap-1 rounded-xl bg-card/70 border border-border p-1" aria-label={text.choose}>
             {(["uz", "en", "ru"] as Lang[]).map((code) => (

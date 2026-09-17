@@ -70,10 +70,7 @@ export default function Layout() {
       >
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
           <Link to="/" className="flex items-center gap-2 flex-shrink-0">
-            <div className="h-10 w-[166px] flex items-center gap-2 rounded-lg border border-primary/60 bg-black/80 px-1.5">
-              <img src="/candora-logo.jpg" alt="Candora" className="h-8 w-8 object-cover" />
-              <span className="font-display text-xl font-bold tracking-tight text-[#f4ead7]">Candora</span>
-            </div>
+            <img src="/candora-logo.jpg" alt="Candora" className="h-10 w-10 object-cover" />
           </Link>
 
           {/* Desktop nav */}
@@ -218,10 +215,7 @@ export default function Layout() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
             <div>
               <div className="flex items-center mb-4">
-                <div className="h-9 w-[154px] flex items-center gap-2 rounded-lg border border-primary/60 bg-black/80 px-1.5">
-                  <img src="/candora-logo.jpg" alt="Candora" className="h-7 w-7 object-cover" />
-                  <span className="font-display text-lg font-bold text-[#f4ead7]">Candora</span>
-                </div>
+                <img src="/candora-logo.jpg" alt="Candora" className="h-9 w-9 object-cover" />
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed mb-5">
                 {lang === "uz" ? "Artisan hashamatli shirinliklar. 2018 yildan beri sevgi bilan tayyorlanadi." :
