@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router";
 import { motion } from "motion/react";
-import { User, ShoppingBag, Edit2, Check, X, LogOut, Loader2, Camera } from "lucide-react";
+import { User, ShoppingBag, Edit2, Check, X, LogOut, Loader2, Camera, ArrowLeft } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { useT } from "../../lib/i18n";
 import { formatPhone } from "../../lib/data";
@@ -10,6 +10,7 @@ export default function Account() {
   const { user, profile, lang, loadingAuth, updateProfile, logout, fetchOrders, orders } = useApp();
   const { updatePassword } = useApp();
   const t = useT(lang);
+  const goBack = () => window.history.length > 1 ? window.history.back() : window.location.assign("/");
   const [tab, setTab] = useState<"profile" | "orders">("profile");
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -98,6 +99,7 @@ export default function Account() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
+            <button type="button" onClick={goBack} className="mb-4 flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"><ArrowLeft size={15} /> {t.account.back}</button>
             <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-1">{t.account.profile}</p>
             <h1 className="font-display text-3xl font-bold">{t.account.profile}</h1>
           </div>
@@ -120,13 +122,13 @@ export default function Account() {
         </div>
 
         {avatarOpen && (
-          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setAvatarOpen(false)}>
-            <div className="w-full max-w-lg bg-card border border-border rounded-3xl p-6 shadow-2xl" onClick={event => event.stopPropagation()}>
-              <div className="flex items-center justify-between mb-5"><div><h2 className="font-semibold">Avatar tanlang</h2><p className="text-xs text-muted-foreground mt-1">Avatarni tanlang yoki fayldan yuklang.</p></div><button type="button" onClick={() => setAvatarOpen(false)} className="w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center"><X size={16} /></button></div>
-              <div className="grid grid-cols-4 gap-3">
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4" onClick={() => setAvatarOpen(false)}>
+            <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto bg-card border border-border rounded-3xl p-5 sm:p-6 shadow-2xl" onClick={event => event.stopPropagation()}>
+              <div className="flex items-center justify-between mb-5"><div><h2 className="font-semibold">{t.account.chooseAvatar}</h2><p className="text-xs text-muted-foreground mt-1">{t.account.chooseAvatarDesc}</p></div><button type="button" onClick={() => setAvatarOpen(false)} className="w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center"><X size={16} /></button></div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {avatarOptions.map((option, index) => <button type="button" key={option} onClick={() => { setAvatar(option); localStorage.setItem(`candora_avatar:${user.id}`, option); setAvatarOpen(false); void updateProfile({ avatar: option }); }} className={`aspect-square rounded-2xl overflow-hidden border-2 ${avatar === option ? "border-primary" : "border-border hover:border-primary/60"}`}><img src={option} alt={`Avatar ${index + 1}`} className="w-full h-full object-cover" /></button>)}
               </div>
-              <label className="mt-5 flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-dashed border-border hover:border-primary hover:text-primary cursor-pointer text-sm font-medium transition-colors"><Camera size={16} /> Fayldan yuklash<input type="file" accept="image/png,image/jpeg,image/webp" onChange={handleAvatarUpload} className="hidden" /></label>
+              <label className="mt-5 flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-dashed border-border hover:border-primary hover:text-primary cursor-pointer text-sm font-medium transition-colors"><Camera size={16} /> {t.account.uploadAvatar}<input type="file" accept="image/png,image/jpeg,image/webp" onChange={handleAvatarUpload} className="hidden" /></label>
             </div>
           </div>
         )}

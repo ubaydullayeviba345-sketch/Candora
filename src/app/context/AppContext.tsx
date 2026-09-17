@@ -141,7 +141,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
       api.getCart(currentUser.id),
     ]);
     if (profileRes.status === "fulfilled" && profileRes.value?.profile) {
-      setProfile({ ...fallbackProfile, ...profileRes.value.profile, ...localProfile });
+      setProfile({
+        ...fallbackProfile,
+        ...profileRes.value.profile,
+        avatar: String(localProfile.avatar ?? fallbackProfile.avatar ?? ""),
+        ...localProfile,
+      });
     } else setProfile({ ...fallbackProfile, ...localProfile });
     if (cartRes.status === "fulfilled" && cartRes.value?.items) {
       setCartItems(cartRes.value.items);

@@ -70,7 +70,7 @@ export default function Layout() {
       >
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
           <Link to="/" className="flex items-center gap-2 flex-shrink-0">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
               <Sparkles size={15} className="text-primary-foreground" />
             </div>
             <span className="font-display text-xl font-bold tracking-tight">Candora</span>
