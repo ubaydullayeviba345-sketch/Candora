@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { motion } from "motion/react";
-import { Check, LockKeyhole, UserRound } from "lucide-react";
+import { Check, LockKeyhole, Sparkles, UserRound } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import AuthModal from "./AuthModal";
 import type { Lang } from "../../lib/i18n";
@@ -59,7 +59,8 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
       <div className="relative min-h-screen max-w-6xl mx-auto px-6 py-8 flex flex-col">
         <header className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <img src="/candora-wordmark.png" alt="Candora" className="h-10 w-[158px] object-contain object-left mix-blend-screen" />
+            <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center"><Sparkles size={17} className="text-primary-foreground" /></div>
+            <span className="font-display text-xl font-bold">Candora</span>
           </div>
           <div className="flex items-center gap-1 rounded-xl bg-card/70 border border-border p-1" aria-label={text.choose}>
             {(["uz", "en", "ru"] as Lang[]).map((code) => (

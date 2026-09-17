@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Outlet, Link, useLocation, useNavigate } from "react-router";
 import {
   ShoppingCart, Search, Sun, Moon, Menu, X,
+  Sparkles,
   User, LogOut, MapPin, Phone, Instagram, Twitter,
 } from "lucide-react";
 import { useApp } from "../context/AppContext";
@@ -70,7 +71,10 @@ export default function Layout() {
       >
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
           <Link to="/" className="flex items-center gap-2 flex-shrink-0">
-            <img src="/candora-wordmark.png" alt="Candora" className="h-10 w-[158px] object-contain object-left mix-blend-screen" />
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+              <Sparkles size={15} className="text-primary-foreground" />
+            </div>
+            <span className="font-display text-xl font-bold tracking-tight">Candora</span>
           </Link>
 
           {/* Desktop nav */}
@@ -215,7 +219,10 @@ export default function Layout() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
             <div>
               <div className="flex items-center mb-4">
-                <img src="/candora-wordmark.png" alt="Candora" className="h-9 w-[142px] object-contain object-left mix-blend-screen" />
+                <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
+                  <Sparkles size={13} className="text-primary-foreground" />
+                </div>
+                <span className="font-display text-lg font-bold">Candora</span>
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed mb-5">
                 {lang === "uz" ? "Artisan hashamatli shirinliklar. 2018 yildan beri sevgi bilan tayyorlanadi." :
