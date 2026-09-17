@@ -130,13 +130,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
       email: currentUser.email ?? "",
       avatar: String(metadata.avatar ?? metadata.picture ?? ""),
     };
+    let localProfile: Partial<ProfileData> = {};
+    try {
+      localProfile = JSON.parse(localStorage.getItem(`candora_profile:${currentUser.id}`) ?? "{}");
+    } catch {
+      localProfile = {};
+    }
     const [profileRes, cartRes] = await Promise.allSettled([
       api.getProfile(currentUser.id),
       api.getCart(currentUser.id),
     ]);
     if (profileRes.status === "fulfilled" && profileRes.value?.profile) {
-      setProfile({ ...fallbackProfile, ...profileRes.value.profile });
-    } else setProfile(fallbackProfile);
+      setProfile({ ...fallbackProfile, ...profileRes.value.profile, ...localProfile });
+    } else setProfile({ ...fallbackProfile, ...localProfile });
     if (cartRes.status === "fulfilled" && cartRes.value?.items) {
       setCartItems(cartRes.value.items);
     }
@@ -275,10 +281,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (!user) return;
     const updated = { ...profile, ...data } as ProfileData;
     setProfile(updated);
+    localStorage.setItem(`candora_profile:${user.id}`, JSON.stringify(updated));
     await supabase.auth.updateUser({
       data: { firstName: updated.firstName, lastName: updated.lastName, phone: updated.phone, avatar: updated.avatar },
     });
-    await api.saveProfile(user.id, updated);
+    try {
+      await api.saveProfile(user.id, updated);
+    } catch (error) {
+      console.error("Profile sync failed:", error);
+    }
   };
 
   const fetchOrders = async () => {
