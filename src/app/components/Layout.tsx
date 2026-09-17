@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Outlet, Link, useLocation, useNavigate } from "react-router";
 import {
-  ShoppingCart, Search, Sun, Moon, Menu, X, Sparkles,
+  ShoppingCart, Search, Sun, Moon, Menu, X,
   User, LogOut, MapPin, Phone, Instagram, Twitter,
 } from "lucide-react";
 import { useApp } from "../context/AppContext";
@@ -70,8 +70,8 @@ export default function Layout() {
       >
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
           <Link to="/" className="flex items-center gap-2 flex-shrink-0">
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-              <Sparkles size={15} className="text-primary-foreground" />
+            <div className="w-8 h-8 rounded-full overflow-hidden border border-primary/50 bg-black flex items-center justify-center">
+              <img src="/candora-logo.jpg" alt="Candora" className="w-full h-full object-cover" />
             </div>
             <span className="font-display text-xl font-bold tracking-tight">Candora</span>
           </Link>
@@ -218,8 +218,8 @@ export default function Layout() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
-                  <Sparkles size={13} className="text-primary-foreground" />
+                <div className="w-7 h-7 rounded-full overflow-hidden border border-primary/50 bg-black flex items-center justify-center">
+                  <img src="/candora-logo.jpg" alt="Candora" className="w-full h-full object-cover" />
                 </div>
                 <span className="font-display text-lg font-bold">Candora</span>
               </div>
