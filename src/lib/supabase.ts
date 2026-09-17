@@ -1,0 +1,58 @@
+import { createClient } from "@supabase/supabase-js";
+
+const PROJECT_ID = "rxzrtqxvbcuhpqxwyxaj";
+const ANON_KEY =
+  "sb_publishable_XWQNtLjiao1Zeb-k5WuL2g_ZVyRVcIp";
+
+const SUPABASE_URL = `https://${PROJECT_ID}.supabase.co`;
+export const API_BASE = `${SUPABASE_URL}/functions/v1/server`;
+
+export const supabase = createClient(SUPABASE_URL, ANON_KEY);
+
+const headers = async (): Promise<Record<string, string>> => {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${session?.access_token ?? ANON_KEY}`,
+  };
+};
+
+const request = async (path: string, options: RequestInit = {}) => {
+  const response = await fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers: { ...(await headers()), ...options.headers },
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || "Server request failed");
+  return data;
+};
+
+export const api = {
+  saveProfile: async (_userId: string, profile: object) => {
+    return request("/profile", {
+      method: "POST",
+      body: JSON.stringify(profile),
+    });
+  },
+  getProfile: async (_userId: string) => request("/profile"),
+  saveCart: async (_userId: string, items: object[]) => {
+    return request("/cart", {
+      method: "POST",
+      body: JSON.stringify({ items }),
+    });
+  },
+  getCart: async (_userId: string) => request("/cart"),
+  createOrder: async (_userId: string, order: object) => {
+    return request("/orders", {
+      method: "POST",
+      body: JSON.stringify(order),
+    });
+  },
+  getOrders: async (_userId: string) => request("/orders"),
+  createCustomOrder: async (order: object) => request("/custom-orders", {
+    method: "POST",
+    body: JSON.stringify(order),
+  }),
+};

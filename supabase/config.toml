@@ -1,0 +1,4 @@
+[functions.server]
+# The function performs user verification for protected routes itself.
+# This allows the public custom-order form to remain available to guests.
+verify_jwt = false
