@@ -128,7 +128,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       lastName: String(metadata.lastName ?? nameParts.slice(1).join(" ")),
       phone: String(metadata.phone ?? "+998 "),
       email: currentUser.email ?? "",
-      avatar: String(metadata.avatar ?? metadata.picture ?? ""),
+      avatar: String(metadata.avatar ?? ""),
     };
     let localProfile: Partial<ProfileData> = {};
     try {
