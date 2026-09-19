@@ -1,21 +1,19 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import confetti from "canvas-confetti";
 import {
   Sparkles,
   Gift,
-  Check,
-  Copy,
   Send,
   Loader2,
   X,
   ExternalLink,
   ShieldCheck,
-  Percent,
+  BellRing,
 } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { useT } from "../../lib/i18n";
-import { drawPrize, isValidEmail, type Prize } from "../../lib/lottery";
+import { isValidEmail } from "../../lib/lottery";
 import { api } from "../../lib/supabase";
 
 export default function LotterySection() {
@@ -25,10 +23,8 @@ export default function LotterySection() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [wonPrize, setWonPrize] = useState<Prize | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAlreadySaved, setIsAlreadySaved] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   const fireConfetti = () => {
     try {
@@ -55,7 +51,22 @@ export default function LotterySection() {
         });
       }, 250);
     } catch {
-      // safe fallback if confetti fails in some environments
+      // safe fallback
+    }
+  };
+
+  const openTelegramChannel = () => {
+    // Try opening Telegram app directly via deep link, fallback to web
+    const tgDeepLink = "tg://resolve?domain=candora_uz";
+    const tgWebLink = "https://t.me/candora_uz";
+
+    try {
+      window.location.href = tgDeepLink;
+      setTimeout(() => {
+        window.open(tgWebLink, "_blank", "noopener,noreferrer");
+      }, 500);
+    } catch {
+      window.open(tgWebLink, "_blank", "noopener,noreferrer");
     }
   };
 
@@ -72,11 +83,7 @@ export default function LotterySection() {
     setLoading(true);
 
     try {
-      // 1. Draw 100% win prize according to distribution rules
-      const prize = drawPrize();
-
-      // 2. Send to backend (Supabase Edge Function + Telegram Bot Notification)
-      const res = await api.joinLottery(trimmed, prize.name.uz || prize.name.en).catch(() => null);
+      const res = await api.joinLottery(trimmed, "Telegram kanalda aniqlanadi").catch(() => null);
 
       if (res?.alreadySubscribed) {
         setIsAlreadySaved(true);
@@ -84,13 +91,9 @@ export default function LotterySection() {
         setIsAlreadySaved(false);
       }
 
-      setWonPrize(prize);
       setIsModalOpen(true);
       fireConfetti();
     } catch {
-      // Even if network fails, client prize is guaranteed
-      const prize = drawPrize();
-      setWonPrize(prize);
       setIsModalOpen(true);
       fireConfetti();
     } finally {
@@ -98,20 +101,13 @@ export default function LotterySection() {
     }
   };
 
-  const copyPromoCode = () => {
-    if (!wonPrize?.promoCode) return;
-    navigator.clipboard.writeText(wonPrize.promoCode);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
-  };
-
   return (
     <section className="relative overflow-hidden py-24 my-12 mx-4 sm:mx-6 rounded-[2.5rem] max-w-7xl lg:mx-auto border border-[#78350f]/30 bg-gradient-to-br from-[#1c120c] via-[#2a170e] to-[#180f0a] text-stone-100 shadow-2xl">
-      {/* Decorative luxury glowing backgrounds */}
+      {/* Decorative glowing backgrounds */}
       <div className="absolute top-0 right-0 -mr-24 -mt-24 w-96 h-96 rounded-full bg-gradient-to-br from-amber-600/20 via-orange-600/10 to-transparent blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-0 -ml-24 -mb-24 w-96 h-96 rounded-full bg-gradient-to-tr from-orange-700/20 via-amber-700/10 to-transparent blur-3xl pointer-events-none" />
 
-      {/* Grid Pattern overlay for depth */}
+      {/* Grid Pattern overlay */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#f97316_1px,transparent_1px)] [background-size:16px_16px]" />
 
       <div className="relative max-w-4xl mx-auto px-6 sm:px-10 text-center">
@@ -151,10 +147,10 @@ export default function LotterySection() {
         {/* Prizes tier preview pills */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-3xl mx-auto mb-10 text-xs">
           {[
-            { icon: "🎂", title: lang === "uz" ? "Qimmatroq tort" : lang === "ru" ? "Премиум торт" : "Free Cake", chance: "10%" },
-            { icon: "🥐", title: lang === "uz" ? "Mazali pishiriq" : lang === "ru" ? "Выпечка" : "Pastry", chance: "20%" },
-            { icon: "🍫✨", title: lang === "uz" ? "Trend shirinlik" : lang === "ru" ? "Эксклюзив" : "Exclusive", chance: "5%" },
-            { icon: "🎟️", title: lang === "uz" ? "50 000 so'm bonus" : lang === "ru" ? "Бонус 50 000" : "50k Bonus", chance: "65%" },
+            { icon: "🎂", title: lang === "uz" ? "Qimmatroq tort" : lang === "ru" ? "Премиум торт" : "Free Cake" },
+            { icon: "🥐", title: lang === "uz" ? "Mazali pishiriq" : lang === "ru" ? "Выпечка" : "Pastry" },
+            { icon: "🍫✨", title: lang === "uz" ? "Trend shirinlik" : lang === "ru" ? "Эксклюзив" : "Exclusive" },
+            { icon: "🎟️", title: lang === "uz" ? "50 000 so'm bonus" : lang === "ru" ? "Бонус 50 000" : "50k Bonus" },
           ].map((item, idx) => (
             <div
               key={idx}
@@ -163,7 +159,9 @@ export default function LotterySection() {
               <span className="text-base">{item.icon}</span>
               <div className="text-left">
                 <p className="font-semibold text-stone-200 truncate">{item.title}</p>
-                <p className="text-[10px] text-amber-400 font-bold">{item.chance}</p>
+                <p className="text-[10px] text-amber-400 font-bold">
+                  {lang === "uz" ? "Kanalda aniqlanadi" : lang === "ru" ? "В Telegram канале" : "In Channel"}
+                </p>
               </div>
             </div>
           ))}
@@ -218,18 +216,18 @@ export default function LotterySection() {
             <ShieldCheck size={14} className="text-amber-500/80" />
             <span>
               {lang === "uz"
-                ? "100% kafolatlangan sovrin. Har bir email faqat bir marta yutadi."
+                ? "G'oliblar rasmiy Telegram kanalimizda jonli aniqlanadi!"
                 : lang === "ru"
-                ? "100% гарантированный приз. Каждый email участвует один раз."
-                : "100% guaranteed prize. Each email can win once."}
+                ? "Победители будут определены в нашем официальном Telegram-канале!"
+                : "Winners will be announced on our official Telegram channel!"}
             </span>
           </div>
         </form>
       </div>
 
-      {/* POPUP / MODAL: Yutuq Oynasi */}
+      {/* POPUP / MODAL: Tabrik va Telegramga yo'naltirish */}
       <AnimatePresence>
-        {isModalOpen && wonPrize && (
+        {isModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -246,99 +244,56 @@ export default function LotterySection() {
                 <X size={16} />
               </button>
 
-              {/* Glowing circle behind prize */}
-              <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-orange-500/20 to-amber-500/30 flex items-center justify-center text-5xl mb-5 shadow-lg border border-orange-500/30 animate-bounce">
-                {wonPrize.icon}
+              {/* Glowing Icon */}
+              <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-orange-500/20 to-amber-500/30 flex items-center justify-center text-4xl mb-4 shadow-lg border border-orange-500/30">
+                🎉
               </div>
-
-              {/* Badge */}
-              <span className="inline-block px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-orange-600/20 border border-orange-500/40 text-amber-300 mb-3">
-                {wonPrize.badge[lang] || wonPrize.badge.uz}
-              </span>
 
               {/* Title */}
               <h3 className="font-display text-2xl font-bold text-white mb-2">
                 {isAlreadySaved ? t.lottery.alreadyParticipated : t.lottery.congratsTitle}
               </h3>
 
-              {/* Prize Name */}
-              <div className="p-4 rounded-2xl bg-gradient-to-r from-orange-950/60 via-amber-950/40 to-orange-950/60 border border-orange-500/30 my-4 shadow-inner">
-                <p className="text-xs text-amber-400/90 font-medium mb-1">{t.lottery.wonLabel}</p>
-                <p className="text-xl font-bold text-white">{wonPrize.name[lang] || wonPrize.name.uz}</p>
-                <p className="text-xs text-stone-300/80 mt-2 leading-relaxed">
-                  {wonPrize.description[lang] || wonPrize.description.uz}
-                </p>
-              </div>
-
-              {/* Promo code block if present */}
-              {wonPrize.promoCode && (
-                <div className="mb-5 p-3 rounded-xl bg-black/40 border border-dashed border-amber-500/50 flex items-center justify-between">
-                  <div className="text-left">
-                    <p className="text-[10px] text-stone-400">{t.lottery.promoCodeLabel}</p>
-                    <p className="font-mono font-bold text-amber-300 text-sm tracking-wider">
-                      {wonPrize.promoCode}
+              {/* Info text: Sovg'alar Telegram kanalda tez orada aniqlanadi */}
+              <div className="p-4 rounded-2xl bg-gradient-to-r from-orange-950/60 via-amber-950/40 to-orange-950/60 border border-orange-500/30 my-4 shadow-inner text-left">
+                <div className="flex items-start gap-3">
+                  <BellRing size={22} className="text-amber-400 flex-shrink-0 mt-0.5 animate-bounce" />
+                  <div>
+                    <p className="text-sm font-semibold text-white leading-snug">
+                      {t.lottery.infoText}
+                    </p>
+                    <p className="text-xs text-stone-300/80 mt-2 leading-relaxed">
+                      {t.lottery.telegramPrompt}
                     </p>
                   </div>
-                  <button
-                    onClick={copyPromoCode}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-600/30 hover:bg-orange-600/50 border border-orange-500/40 text-xs font-semibold text-amber-200 transition-colors"
-                  >
-                    {copied ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
-                    <span>{copied ? t.lottery.copied : t.lottery.copyCode}</span>
-                  </button>
                 </div>
-              )}
+              </div>
 
-              {/* Instructions */}
-              <p className="text-xs text-stone-400 leading-relaxed mb-6">
-                {t.lottery.claimInstructions}
-              </p>
+              {/* Action: Telegram Channel Buttons */}
+              <div className="space-y-3 mt-5">
+                {/* Asosiy tugma: Telegram dasturini to'g'ridan-to'g'ri ochadi */}
+                <button
+                  onClick={openTelegramChannel}
+                  className="w-full py-3.5 px-5 rounded-xl bg-gradient-to-r from-[#229ED9] via-[#0088cc] to-[#0077b5] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg hover:shadow-cyan-500/30 transition-all transform active:scale-95 cursor-pointer"
+                >
+                  <Send size={16} />
+                  <span>{t.lottery.joinTelegram} (@candora_uz)</span>
+                </button>
 
-              {/* Action: Telegram Channel button */}
-              {/* Action: Telegram Channel & Bot buttons */}
-              <div className="space-y-2.5">
+                {/* Alternativ havola: Brauzer orqali ochish */}
                 <a
                   href="https://t.me/candora_uz"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-3.5 px-5 rounded-xl bg-gradient-to-r from-[#229ED9] to-[#0088cc] hover:from-[#1e8bc0] hover:to-[#0077b5] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg transition-all transform active:scale-95"
-                  onClick={(e) => {
-                    // Ensures fallback for environments where target=_blank is restricted
-                    try {
-                      window.open("https://t.me/candora_uz", "_blank", "noopener,noreferrer");
-                    } catch {
-                      window.location.href = "https://t.me/candora_uz";
-                    }
-                  }}
-                  className="w-full py-3.5 px-5 rounded-xl bg-gradient-to-r from-[#229ED9] via-[#0088cc] to-[#0077b5] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg hover:shadow-cyan-500/20 transition-all transform active:scale-95 cursor-pointer"
+                  className="w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-stone-300 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors"
                 >
-                  <Send size={16} />
-                  <span>{t.lottery.joinTelegram}</span>
-                  <span>{t.lottery.joinTelegram} (@candora_uz)</span>
-                  <ExternalLink size={14} className="opacity-80" />
-                </a>
-
-                <a
-                  href="https://t.me/v9x2q7n4kp_bot"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => {
-                    try {
-                      window.open("https://t.me/v9x2q7n4kp_bot", "_blank", "noopener,noreferrer");
-                    } catch {
-                      window.location.href = "https://t.me/v9x2q7n4kp_bot";
-                    }
-                  }}
-                  className="w-full py-3 px-5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-stone-200 font-semibold text-xs flex items-center justify-center gap-2 transition-all transform active:scale-95 cursor-pointer"
-                >
-                  <span>🤖 Candora Bot orqali yutuqni tasdiqlash</span>
+                  <span>Brauzerda ko'rish (t.me/candora_uz)</span>
                   <ExternalLink size={12} className="opacity-70" />
                 </a>
 
-
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="w-full py-2.5 rounded-xl text-stone-400 hover:text-stone-200 text-xs font-medium transition-colors"
+                  className="w-full py-2 rounded-xl text-stone-400 hover:text-stone-200 text-xs font-medium transition-colors"
                 >
                   {t.lottery.close}
                 </button>
@@ -350,4 +305,3 @@ export default function LotterySection() {
     </section>
   );
 }
-
