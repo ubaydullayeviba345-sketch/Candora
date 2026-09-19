@@ -295,17 +295,46 @@ export default function LotterySection() {
               </p>
 
               {/* Action: Telegram Channel button */}
+              {/* Action: Telegram Channel & Bot buttons */}
               <div className="space-y-2.5">
                 <a
                   href="https://t.me/candora_uz"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full py-3.5 px-5 rounded-xl bg-gradient-to-r from-[#229ED9] to-[#0088cc] hover:from-[#1e8bc0] hover:to-[#0077b5] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg transition-all transform active:scale-95"
+                  onClick={(e) => {
+                    // Ensures fallback for environments where target=_blank is restricted
+                    try {
+                      window.open("https://t.me/candora_uz", "_blank", "noopener,noreferrer");
+                    } catch {
+                      window.location.href = "https://t.me/candora_uz";
+                    }
+                  }}
+                  className="w-full py-3.5 px-5 rounded-xl bg-gradient-to-r from-[#229ED9] via-[#0088cc] to-[#0077b5] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg hover:shadow-cyan-500/20 transition-all transform active:scale-95 cursor-pointer"
                 >
                   <Send size={16} />
                   <span>{t.lottery.joinTelegram}</span>
+                  <span>{t.lottery.joinTelegram} (@candora_uz)</span>
                   <ExternalLink size={14} className="opacity-80" />
                 </a>
+
+                <a
+                  href="https://t.me/v9x2q7n4kp_bot"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => {
+                    try {
+                      window.open("https://t.me/v9x2q7n4kp_bot", "_blank", "noopener,noreferrer");
+                    } catch {
+                      window.location.href = "https://t.me/v9x2q7n4kp_bot";
+                    }
+                  }}
+                  className="w-full py-3 px-5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-stone-200 font-semibold text-xs flex items-center justify-center gap-2 transition-all transform active:scale-95 cursor-pointer"
+                >
+                  <span>🤖 Candora Bot orqali yutuqni tasdiqlash</span>
+                  <ExternalLink size={12} className="opacity-70" />
+                </a>
+
 
                 <button
                   onClick={() => setIsModalOpen(false)}
