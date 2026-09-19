@@ -38,7 +38,22 @@ export default function Layout() {
     return () => window.removeEventListener("scroll", h);
   }, []);
 
-  useEffect(() => { setMenuOpen(false); setUserMenuOpen(false); }, [location.pathname]);
+  useEffect(() => {
+    setMenuOpen(false);
+    setUserMenuOpen(false);
+
+    if (location.hash) {
+      const id = location.hash.replace("#", "");
+      requestAnimationFrame(() => {
+        const target = document.getElementById(id);
+        if (target) {
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+    } else {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }
+  }, [location.pathname, location.hash]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,6 +70,26 @@ export default function Layout() {
     { to: "/custom-orders", label: t.nav.customOrders },
     { to: "/about", label: t.nav.about },
   ];
+
+  const isActiveNavItem = (to: string) => {
+    if (to === "/#catalog") {
+      return location.pathname === "/" && (!location.hash || location.hash === "#catalog");
+    }
+
+    if (to === "/collections") {
+      return location.pathname === "/collections";
+    }
+
+    if (to === "/custom-orders") {
+      return location.pathname === "/custom-orders";
+    }
+
+    if (to === "/about") {
+      return location.pathname === "/about";
+    }
+
+    return false;
+  };
 
   const isHome = location.pathname === "/";
   const transparent = isHome && !scrolled;
@@ -79,12 +114,22 @@ export default function Layout() {
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-7">
-            {navLinks.map(({ to, label }) => (
-              <Link key={to} to={to}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                {label}
-              </Link>
-            ))}
+            {navLinks.map(({ to, label }) => {
+              const active = isActiveNavItem(to);
+
+              return (
+                <Link
+                  key={to}
+                  to={to}
+                  className={[
+                    "relative text-sm transition-colors duration-200",
+                    active ? "text-primary font-semibold" : "text-muted-foreground hover:text-foreground",
+                  ].join(" ")}
+                >
+                  {label}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Actions */}
@@ -183,10 +228,23 @@ export default function Layout() {
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden border-t border-border bg-background/95 backdrop-blur-xl md:hidden">
               <div className="px-4 py-4 space-y-1">
-                {navLinks.map(({ to, label }) => (
-                  <Link key={to} to={to} onClick={() => setMenuOpen(false)}
-                    className="block px-3 py-2.5 rounded-xl hover:bg-muted text-sm transition-colors">{label}</Link>
-                ))}
+                {navLinks.map(({ to, label }) => {
+                  const active = isActiveNavItem(to);
+
+                  return (
+                    <Link
+                      key={to}
+                      to={to}
+                      onClick={() => setMenuOpen(false)}
+                      className={[
+                        "block px-3 py-2.5 rounded-xl text-sm transition-colors",
+                        active ? "bg-primary/10 text-primary font-semibold border border-primary/20" : "hover:bg-muted text-muted-foreground",
+                      ].join(" ")}
+                    >
+                      {label}
+                    </Link>
+                  );
+                })}
                 {/* Mobile lang */}
                 <div className="flex gap-2 pt-2 px-3">
                   {LANGS.map(({ code, label }) => (

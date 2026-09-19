@@ -2,7 +2,6 @@ import { useEffect, useState, type ReactNode } from "react";
 import { motion } from "motion/react";
 import { Check, LockKeyhole, Sparkles, UserRound } from "lucide-react";
 import { useApp } from "../context/AppContext";
-import AuthModal from "./AuthModal";
 import type { Lang } from "../../lib/i18n";
 
 const copy: Record<Lang, {
@@ -98,7 +97,6 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
           </motion.section>
         </main>
       </div>
-      <AuthModal />
     </div>
   );
 }

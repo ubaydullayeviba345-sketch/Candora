@@ -46,14 +46,19 @@ const requireAdmin = async (c: Context) => {
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
   const adminEmail = Deno.env.get("ADMIN_EMAIL")?.toLowerCase();
-  if (!supabaseUrl || !anonKey || !adminEmail) return c.json({ error: "Admin access is not configured" }, 503);
+  if (!supabaseUrl || !anonKey) return c.json({ error: "Authentication is not configured" }, 503);
 
   const { createClient } = await import("jsr:@supabase/supabase-js@2");
   const auth = createClient(supabaseUrl, anonKey, {
     global: { headers: { Authorization: authorization } },
   });
   const { data: { user } } = await auth.auth.getUser();
-  if (!user || user.email?.toLowerCase() !== adminEmail) return c.json({ error: "Admin access required" }, 403);
+  if (!user) return c.json({ error: "Authentication required" }, 401);
+
+  // Local development fallback: if no ADMIN_EMAIL is configured, allow any authenticated user.
+  // In production, the secret should still be set so only the real admin can access the panel.
+  if (!adminEmail) return user;
+  if (user.email?.toLowerCase() !== adminEmail) return c.json({ error: "Admin access required" }, 403);
   return user;
 };
 

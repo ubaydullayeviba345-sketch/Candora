@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { X, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { useT } from "../../lib/i18n";
-import { formatPhone } from "../../lib/data";
+import { normalizePhoneInput } from "../../lib/data";
 
 export default function AuthModal() {
   const { authOpen, authTab, closeAuth, openAuth, login, register, resetPassword, loginWithGoogle, loginWithFacebook, loginWithDiscord, lang } = useApp();
@@ -25,10 +25,17 @@ export default function AuthModal() {
     setNotice("");
   };
 
-  const handlePhoneChange = (v: string) => {
-    if (!v.startsWith("+998")) { setPhone("+998 "); return; }
-    const after = v.slice(4).replace(/\D/g, "");
-    setPhone(formatPhone(after));
+  const handleClose = () => {
+    reset();
+    closeAuth();
+  };
+
+  const handlePhoneChange = (v: string, input?: HTMLInputElement | null) => {
+    const next = normalizePhoneInput(v, input ? input.selectionStart ?? v.length : null);
+    setPhone(next.value);
+    requestAnimationFrame(() => {
+      if (input) input.setSelectionRange(next.caret, next.caret);
+    });
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -102,7 +109,7 @@ export default function AuthModal() {
         <>
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            onClick={() => { reset(); closeAuth(); }}
+            onClick={handleClose}
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
           />
           <motion.div
@@ -127,7 +134,7 @@ export default function AuthModal() {
                     </button>
                   ))}
                 </div>
-                <button onClick={() => { reset(); closeAuth(); }} className="w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center transition-colors">
+                <button type="button" aria-label="Close login modal" onClick={handleClose} className="w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center transition-colors">
                   <X size={16} />
                 </button>
               </div>
@@ -220,7 +227,7 @@ export default function AuthModal() {
                     </div>
                     <div>
                       <label className="text-xs font-medium text-muted-foreground mb-1 block">{t.auth.phone}</label>
-                      <input type="tel" required value={phone} onChange={e => handlePhoneChange(e.target.value)}
+                      <input type="tel" required value={phone} onChange={e => handlePhoneChange(e.target.value, e.target)}
                         className="w-full px-4 py-3 rounded-xl bg-muted border border-border text-sm outline-none focus:border-primary transition-colors font-mono"
                         placeholder="+998 91 234 56 78" />
                     </div>

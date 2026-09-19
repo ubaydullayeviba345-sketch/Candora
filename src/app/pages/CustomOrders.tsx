@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import { CheckCircle2, Loader2, Sparkles } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { useT } from "../../lib/i18n";
-import { formatPhone } from "../../lib/data";
+import { normalizePhoneInput } from "../../lib/data";
 import { api } from "../../lib/supabase";
 
 interface FormData {
@@ -14,6 +14,9 @@ interface FormData {
 export default function CustomOrders() {
   const { lang, user } = useApp();
   const t = useT(lang);
+
+  const today = new Date();
+  const minOrderDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
   const [form, setForm] = useState<FormData>({
     name: "", email: "", phone: "+998 ",
@@ -37,7 +40,7 @@ export default function CustomOrders() {
     if (!form.occasion) e.occasion = t.customOrders.required;
     if (!form.details.trim() || form.details.length < 20) e.details = t.customOrders.required;
     if (!form.budget) e.budget = t.customOrders.required;
-    if (!form.date) e.date = t.customOrders.required;
+    if (!form.date || form.date < minOrderDate) e.date = t.customOrders.required;
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -108,9 +111,9 @@ export default function CustomOrders() {
 
             <Field label={t.customOrders.phone} error={errors.phone}>
               <input value={form.phone} onChange={e => {
-                const raw = e.target.value;
-                if (!raw.startsWith("+998")) { set("phone", "+998 "); return; }
-                set("phone", formatPhone(raw.slice(4).replace(/\D/g, "")));
+                const next = normalizePhoneInput(e.target.value, e.target.selectionStart ?? e.target.value.length);
+                set("phone", next.value);
+                requestAnimationFrame(() => e.target.setSelectionRange(next.caret, next.caret));
               }} className={`${inputCls(errors.phone)} font-mono`} placeholder="+998 91 234 56 78" />
             </Field>
 
@@ -141,7 +144,9 @@ export default function CustomOrders() {
               </Field>
               <Field label={t.customOrders.date} error={errors.date}>
                 <input type="date" value={form.date} onChange={e => set("date", e.target.value)}
-                  min={new Date().toISOString().split("T")[0]}
+                  min={minOrderDate}
+                  onInvalid={e => e.currentTarget.setCustomValidity(t.customOrders.required)}
+                  onInput={e => e.currentTarget.setCustomValidity("")}
                   className={inputCls(errors.date)} />
               </Field>
             </div>

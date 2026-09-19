@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  ArrowRight, Star, Heart, Plus, ChevronRight,
-  Truck, Shield, Gift, Phone, Sparkles, Package, Check,
+  ArrowRight, ArrowLeft, Star, Heart, Plus, ChevronRight,
+  Truck, Shield, Gift, Phone, Sparkles, Package, Check, X, ShoppingCart,
 } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { useT } from "../../lib/i18n";
-import { PRODUCTS, CATEGORIES, TESTIMONIALS, type Product } from "../../lib/data";
+import { PRODUCTS, CATEGORIES, TESTIMONIALS, formatPrice, getProductText, type Product } from "../../lib/data";
 
 function Stars({ rating, size = 12 }: { rating: number; size?: number }) {
   return (
@@ -20,10 +20,11 @@ function Stars({ rating, size = 12 }: { rating: number; size?: number }) {
   );
 }
 
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({ product, onOpen }: { product: Product; onOpen: (product: Product) => void }) {
   const { addToCart, user, openAuth, lang } = useApp();
   const t = useT(lang);
   const [wishlist, setWishlist] = useState(false);
+  const productText = getProductText(product, lang);
 
   const handleAdd = () => {
     if (!user) { openAuth("login"); return; }
@@ -34,6 +35,10 @@ function ProductCard({ product }: { product: Product }) {
     <motion.div
       layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.96 }}
       whileHover={{ y: -6, transition: { duration: 0.22 } }}
+      onClick={() => onOpen(product)}
+      onKeyDown={e => { if (e.key === "Enter" || e.key === " ") onOpen(product); }}
+      tabIndex={0}
+      role="button"
       className="group relative rounded-2xl overflow-hidden bg-card border border-border flex flex-col"
     >
       {product.badge && (
@@ -41,29 +46,30 @@ function ProductCard({ product }: { product: Product }) {
           {product.badge}
         </span>
       )}
-      <button onClick={() => setWishlist(w => !w)} aria-label="Wishlist"
+      <button onClick={e => { e.stopPropagation(); setWishlist(w => !w); }} aria-label="Wishlist"
         className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-background/70 backdrop-blur-md border border-border/50 flex items-center justify-center transition-all hover:scale-110">
         <Heart size={13} className={wishlist ? "fill-rose-500 text-rose-500" : "text-muted-foreground"} />
       </button>
       <div className="aspect-square overflow-hidden bg-muted">
-        <img src={product.image} alt={product.name} loading="lazy"
+        <img src={product.image} alt={productText.name} loading="lazy"
+          onError={event => { event.currentTarget.src = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=700&h=700&q=85"; }}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
       </div>
       <div className="p-4 flex flex-col gap-2 flex-1">
-        <h3 className="font-semibold text-sm text-foreground leading-snug">{product.name}</h3>
-        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{product.description}</p>
+        <h3 className="font-semibold text-sm text-foreground leading-snug">{productText.name}</h3>
+        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{productText.description}</p>
         <div className="flex items-center gap-1.5 mt-0.5">
           <Stars rating={product.rating} />
           <span className="text-xs text-muted-foreground">({product.reviews})</span>
         </div>
         <div className="flex items-center justify-between mt-auto pt-2">
           <div className="flex items-baseline gap-1.5">
-            <span className="font-bold text-foreground">${product.price}</span>
+            <span className="font-bold text-foreground">{formatPrice(product.price, lang)}</span>
             {product.originalPrice && (
-              <span className="text-xs text-muted-foreground line-through">${product.originalPrice}</span>
+              <span className="text-xs text-muted-foreground line-through">{formatPrice(product.originalPrice, lang)}</span>
             )}
           </div>
-          <motion.button whileTap={{ scale: 0.92 }} onClick={handleAdd}
+          <motion.button whileTap={{ scale: 0.92 }} onClick={e => { e.stopPropagation(); handleAdd(); }}
             className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-primary text-primary-foreground text-xs font-semibold hover:opacity-85 transition-opacity">
             <Plus size={11} /> {t.catalog.add}
           </motion.button>
@@ -74,12 +80,15 @@ function ProductCard({ product }: { product: Product }) {
 }
 
 export default function Home() {
-  const { lang } = useApp();
+  const { lang, addToCart, user, openAuth } = useApp();
   const t = useT(lang);
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("search") ?? "";
 
   const [activeCategory, setActiveCategory] = useState("all");
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedImage, setSelectedImage] = useState(0);
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
 
@@ -88,6 +97,15 @@ export default function Home() {
     const matchSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase());
     return matchCat && matchSearch;
   });
+
+  const visibleProducts = filtered.slice(0, 8);
+  const productGallery = selectedProduct?.gallery ?? (selectedProduct ? [selectedProduct.image] : []);
+  const selectedProductText = selectedProduct ? getProductText(selectedProduct, lang) : null;
+
+  const changeProductImage = (direction: 1 | -1) => {
+    if (productGallery.length < 2) return;
+    setSelectedImage(current => (current + direction + productGallery.length) % productGallery.length);
+  };
 
   const scrollToCatalog = () => document.getElementById("catalog")?.scrollIntoView({ behavior: "smooth" });
 
@@ -119,7 +137,7 @@ export default function Home() {
                 className="px-6 py-3.5 rounded-2xl bg-primary text-primary-foreground font-semibold text-sm flex items-center gap-2 hover:opacity-90 transition-opacity">
                 {t.hero.shopNow} <ArrowRight size={15} />
               </motion.button>
-              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }} onClick={() => navigate("/custom-orders")}
                 className="px-6 py-3.5 rounded-2xl border border-border text-sm font-semibold hover:bg-muted transition-colors">
                 {t.hero.customOrders}
               </motion.button>
@@ -141,9 +159,10 @@ export default function Home() {
             transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             className="hidden md:flex justify-end">
             <div className="relative">
-              <div className="w-[400px] h-[500px] rounded-3xl overflow-hidden bg-muted shadow-2xl">
-                <img src="https://images.unsplash.com/photo-1705595049756-c255e6c68d08?w=800&h=1000&fit=crop&auto=format"
-                  alt="Signature Noir Velvet Cake" className="w-full h-full object-cover" />
+              <div className="relative w-[400px] h-[500px] rounded-3xl overflow-hidden bg-muted shadow-2xl">
+                <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&h=1000&fit=crop&auto=format"
+                  alt="Noir Velvet Cake" className="w-full h-full object-cover object-center" />
+                <div className="absolute inset-0 rounded-3xl bg-gradient-to-t from-[#1a1208]/25 via-transparent to-[#b8842f]/10 pointer-events-none" />
               </div>
               <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
                 className="absolute -bottom-5 -left-10 bg-card/90 backdrop-blur-xl border border-border rounded-2xl p-4 shadow-xl w-48">
@@ -190,9 +209,9 @@ export default function Home() {
             <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-2">{t.catalog.title}</p>
             <h2 className="font-display text-3xl sm:text-4xl font-bold">{t.catalog.subtitle} <span className="italic">{t.catalog.subtitle2}</span></h2>
           </div>
-          <a href="#" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
+          <button onClick={() => navigate("/catalog")} className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
             {t.catalog.viewAll} <ChevronRight size={14} />
-          </a>
+          </button>
         </div>
 
         {/* Category pills */}
@@ -207,7 +226,7 @@ export default function Home() {
 
         <motion.div layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           <AnimatePresence>
-            {filtered.map(product => <ProductCard key={product.id} product={product} />)}
+            {visibleProducts.map(product => <ProductCard key={product.id} product={product} onOpen={productToOpen => { setSelectedProduct(productToOpen); setSelectedImage(0); }} />)}
           </AnimatePresence>
         </motion.div>
 
@@ -218,6 +237,71 @@ export default function Home() {
           </div>
         )}
       </section>
+
+      <AnimatePresence>
+        {selectedProduct && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm p-4 sm:p-8 flex items-center justify-center"
+            onClick={() => setSelectedProduct(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 18, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 18, scale: 0.98 }}
+              onClick={e => e.stopPropagation()}
+              className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl bg-card border border-border shadow-2xl grid md:grid-cols-2"
+            >
+              <button onClick={() => setSelectedProduct(null)} aria-label="Close product details"
+                className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-background/80 border border-border flex items-center justify-center hover:bg-muted transition-colors">
+                <X size={16} />
+              </button>
+              <div className="p-4 sm:p-6 bg-muted/40">
+                <div className="relative aspect-square rounded-2xl overflow-hidden bg-muted">
+                  <AnimatePresence initial={false} mode="wait">
+                    <motion.img
+                      key={`${selectedProduct.id}-${selectedImage}`}
+                      initial={{ opacity: 0, x: 32 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -32 }}
+                      transition={{ duration: 0.22 }} src={productGallery[selectedImage]}
+                      alt={`${selectedProduct.name} view ${selectedImage + 1}`} onError={event => { event.currentTarget.src = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=700&h=700&q=85"; }} className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  </AnimatePresence>
+                  {productGallery.length > 1 && (
+                    <>
+                      <button onClick={() => changeProductImage(-1)} aria-label="Previous product image"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-background/85 border border-border flex items-center justify-center shadow-sm hover:bg-background transition-colors">
+                        <ArrowLeft size={16} />
+                      </button>
+                      <button onClick={() => changeProductImage(1)} aria-label="Next product image"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-background/85 border border-border flex items-center justify-center shadow-sm hover:bg-background transition-colors">
+                        <ArrowRight size={16} />
+                      </button>
+                    </>
+                  )}
+                </div>
+                <div className="flex items-center justify-center gap-2 mt-4" aria-label="Product image position">
+                  {productGallery.slice(0, 3).map((image, index) => (
+                    <button key={`${image}-${index}`} onClick={() => setSelectedImage(index)} aria-label={`Show image ${index + 1}`}
+                      className={`h-2.5 rounded-full transition-all ${selectedImage === index ? "w-7 bg-primary" : "w-2.5 bg-muted-foreground/35 hover:bg-muted-foreground/60"}`} />
+                  ))}
+                </div>
+              </div>
+              <div className="p-6 sm:p-8 flex flex-col justify-center">
+                {selectedProduct.badge && <span className="self-start px-2.5 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold uppercase tracking-wider">{selectedProduct.badge}</span>}
+                <h2 className="font-display text-3xl font-bold mt-4">{selectedProductText?.name}</h2>
+                <div className="flex items-center gap-2 mt-3"><Stars rating={selectedProduct.rating} /><span className="text-sm text-muted-foreground">{selectedProduct.rating} ({selectedProduct.reviews} reviews)</span></div>
+                <p className="text-muted-foreground leading-relaxed mt-6">{selectedProductText?.description}</p>
+                <p className="text-2xl font-bold text-primary mt-7">{formatPrice(selectedProduct.price, lang)}</p>
+                <button onClick={() => {
+                  if (!user) { openAuth("login"); return; }
+                  addToCart(selectedProduct);
+                  setSelectedProduct(null);
+                }} className="mt-7 w-full py-3.5 rounded-2xl bg-primary text-primary-foreground font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+                  <ShoppingCart size={16} /> {t.catalog.add}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Collection banner */}
       <section className="relative overflow-hidden mx-4 sm:mx-6 rounded-3xl mb-24 max-w-7xl lg:mx-auto">

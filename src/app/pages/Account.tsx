@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { User, ShoppingBag, Edit2, Check, X, LogOut, Loader2, Camera, ArrowLeft } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { useT } from "../../lib/i18n";
-import { formatPhone } from "../../lib/data";
+import { normalizePhoneInput } from "../../lib/data";
 
 export default function Account() {
   const { user, profile, lang, loadingAuth, updateProfile, logout, fetchOrders, orders } = useApp();
@@ -41,10 +41,12 @@ export default function Account() {
     setEditing(false);
   };
 
-  const handlePhoneChange = (v: string) => {
-    if (!v.startsWith("+998")) { setForm(f => ({ ...f, phone: "+998 " })); return; }
-    const after = v.slice(4).replace(/\D/g, "");
-    setForm(f => ({ ...f, phone: formatPhone(after) }));
+  const handlePhoneChange = (v: string, input?: HTMLInputElement | null) => {
+    const next = normalizePhoneInput(v, input ? input.selectionStart ?? v.length : null);
+    setForm(f => ({ ...f, phone: next.value }));
+    requestAnimationFrame(() => {
+      if (input) input.setSelectionRange(next.caret, next.caret);
+    });
   };
 
   const handlePasswordSave = async () => {
@@ -189,7 +191,7 @@ export default function Account() {
               <div>
                 <label className="text-xs font-medium text-muted-foreground mb-1.5 block">{t.account.phone}</label>
                 {editing ? (
-                  <input value={form.phone} onChange={e => handlePhoneChange(e.target.value)}
+                  <input value={form.phone} onChange={e => handlePhoneChange(e.target.value, e.target)}
                     className="w-full px-4 py-3 rounded-xl bg-muted border border-border text-sm outline-none focus:border-primary transition-colors font-mono" />
                 ) : (
                   <p className="text-sm font-medium px-4 py-3 bg-muted/50 rounded-xl font-mono">{profile?.phone || "—"}</p>
