@@ -38,8 +38,8 @@ export default function About() {
           <motion.div initial={{ opacity: 0, x: 24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
             className="relative">
             <div className="aspect-[4/3] rounded-3xl overflow-hidden bg-muted shadow-2xl">
-              <img src="https://images.unsplash.com/photo-1705595049756-c255e6c68d08?w=800&h=600&fit=crop&auto=format"
-                alt="Candora atelier" className="w-full h-full object-cover" />
+              <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&h=600&fit=crop&auto=format"
+                alt="Candora signature cake" className="w-full h-full object-cover" />
             </div>
             <div className="absolute -bottom-5 -right-5 bg-card border border-border rounded-2xl p-5 shadow-xl">
               <p className="text-3xl font-bold font-display text-primary">7+</p>

@@ -1,23 +1,24 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft, ArrowRight, Plus, ShoppingCart, Sparkles, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Heart, Plus, ShoppingCart, Sparkles, X } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { useNavigate } from "react-router";
 import { useT } from "../../lib/i18n";
-import { CATEGORIES, formatPrice, getProductText, PRODUCTS, type Product } from "../../lib/data";
+import { CATEGORIES, formatPrice, getProductTags, getProductText, PRODUCTS, type Product } from "../../lib/data";
 
 function Stars({ rating }: { rating: number }) {
   return <span className="text-amber-400 tracking-tight">{"★".repeat(Math.round(rating))}</span>;
 }
 
 export default function Catalog() {
-  const { lang, user, openAuth, addToCart } = useApp();
+  const { lang, user, openAuth, addToCart, toggleFavorite, isFavorite } = useApp();
   const t = useT(lang);
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState("all");
+  const [activeTag, setActiveTag] = useState("all");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedImage, setSelectedImage] = useState(0);
-  const products = PRODUCTS.filter(product => activeCategory === "all" || product.category === activeCategory);
+  const products = PRODUCTS.filter(product => (activeCategory === "all" || product.category === activeCategory) && (activeTag === "all" || getProductTags(product).includes(activeTag)));
   const gallery = selectedProduct?.gallery ?? [];
 
   const changeImage = (direction: 1 | -1) => {
@@ -49,6 +50,13 @@ export default function Catalog() {
             </button>
           ))}
         </div>
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-6 -mt-2">
+          {["all", "chocolate", "vegetarian", "gluten-free", "seasonal"].map(tag => (
+            <button key={tag} onClick={() => setActiveTag(tag)} className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${activeTag === tag ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/40"}`}>
+              {tag === "all" ? (lang === "uz" ? "Barcha xususiyatlar" : lang === "ru" ? "Все свойства" : "All features") : tag === "gluten-free" ? "Gluten-free" : tag === "vegetarian" ? "Vegetarian" : tag === "chocolate" ? (lang === "uz" ? "Shokoladli" : lang === "ru" ? "Шоколадные" : "Chocolate") : (lang === "uz" ? "Mavsumiy" : lang === "ru" ? "Сезонные" : "Seasonal")}
+            </button>
+          ))}
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {products.map(product => {
@@ -56,12 +64,13 @@ export default function Catalog() {
             return (
               <article key={product.id} onClick={() => { setSelectedProduct(product); setSelectedImage(0); }} onKeyDown={event => { if (event.key === "Enter") { setSelectedProduct(product); setSelectedImage(0); } }} tabIndex={0} role="button" className="group relative rounded-2xl overflow-hidden bg-card border border-border flex flex-col">
                 {product.badge && <span className="absolute top-3 left-3 z-10 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wider uppercase bg-primary text-primary-foreground">{product.badge}</span>}
+                <button onClick={event => { event.stopPropagation(); toggleFavorite(product.id); }} aria-label="Wishlist" className={`absolute top-3 right-3 z-10 w-8 h-8 rounded-full backdrop-blur-md border flex items-center justify-center hover:scale-110 transition-all ${isFavorite(product.id) ? "bg-primary/20 border-primary/50" : "bg-background/75 border-border/50"}`}><Heart size={13} className={isFavorite(product.id) ? "fill-primary text-primary" : "text-muted-foreground"} /></button>
                 <div className="aspect-square overflow-hidden bg-muted"><img src={product.image} alt={text.name} loading="lazy" onError={event => { event.currentTarget.src = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=700&h=700&q=85"; }} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" /></div>
-                <div className="p-4 flex flex-col gap-2 flex-1">
-                  <h2 className="font-semibold text-sm leading-snug">{text.name}</h2>
+                <div className="p-3 sm:p-4 flex flex-col gap-2 flex-1 min-w-0">
+                  <h2 className="font-semibold text-sm leading-snug line-clamp-2">{text.name}</h2>
                   <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{text.description}</p>
                   <div className="flex items-center gap-1.5 text-xs"><Stars rating={product.rating} /><span className="text-muted-foreground">({product.reviews})</span></div>
-                  <div className="flex items-center justify-between mt-auto pt-2"><span className="font-bold">{formatPrice(product.price, lang)}</span><button onClick={event => { event.stopPropagation(); if (!user) { openAuth("login"); return; } addToCart(product); }} className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-primary text-primary-foreground text-xs font-semibold hover:opacity-85 transition-opacity"><Plus size={11} />{t.catalog.add}</button></div>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-auto pt-2"><span className="font-bold text-sm sm:text-base break-words">{formatPrice(product.price, lang)}</span><button onClick={event => { event.stopPropagation(); if (!user) { openAuth("login"); return; } addToCart(product); }} className="w-full sm:w-auto flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl bg-primary text-primary-foreground text-xs font-semibold whitespace-nowrap hover:opacity-85 transition-opacity"><Plus size={11} />{t.catalog.add}</button></div>
                 </div>
               </article>
             );

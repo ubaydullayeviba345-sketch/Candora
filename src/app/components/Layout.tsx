@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Outlet, Link, useLocation, useNavigate } from "react-router";
 import {
-  ShoppingCart, Search, Sun, Moon, Menu, X,
+  ShoppingCart, Heart, Search, Sun, Moon, Menu, X,
   Sparkles,
   User, LogOut, MapPin, Phone, Instagram, Twitter,
 } from "lucide-react";
@@ -19,7 +19,7 @@ const LANGS: { code: Lang; label: string }[] = [
 ];
 
 export default function Layout() {
-  const { user, profile, dark, setDark, lang, setLang, openAuth, logout, setCartOpen, cartItems } = useApp();
+  const { user, profile, dark, setDark, lang, setLang, openAuth, logout, setCartOpen, cartItems, favoriteIds } = useApp();
   const t = useT(lang);
   const location = useLocation();
   const navigate = useNavigate();
@@ -150,6 +150,10 @@ export default function Layout() {
             <button onClick={() => setDark(!dark)} className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-muted/70 transition-colors" aria-label="Toggle theme">
               {dark ? <Sun size={16} /> : <Moon size={16} />}
             </button>
+            <button onClick={() => navigate("/favorites")} className="relative w-9 h-9 rounded-full flex items-center justify-center hover:bg-muted/70 transition-colors" aria-label="Favorites">
+              <Heart size={16} className={favoriteIds.length ? "fill-primary text-primary" : ""} />
+              {favoriteIds.length > 0 && <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center">{favoriteIds.length}</span>}
+            </button>
             <button onClick={() => setCartOpen(true)} className="relative w-9 h-9 rounded-full flex items-center justify-center hover:bg-muted/70 transition-colors" aria-label="Cart">
               <ShoppingCart size={16} />
               <AnimatePresence>
@@ -276,8 +280,8 @@ export default function Layout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
             <div>
-              <div className="flex items-center mb-4">
-                <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-7 h-7 flex-shrink-0 rounded-lg bg-primary flex items-center justify-center">
                   <Sparkles size={13} className="text-primary-foreground" />
                 </div>
                 <span className="font-display text-lg font-bold">Candora</span>

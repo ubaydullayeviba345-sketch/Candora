@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { useT } from "../../lib/i18n";
-import { PRODUCTS, CATEGORIES, TESTIMONIALS, formatPrice, getProductText, type Product } from "../../lib/data";
+import { PRODUCTS, CATEGORIES, TESTIMONIALS, formatPrice, getProductTags, getProductText, type Product } from "../../lib/data";
 
 function Stars({ rating, size = 12 }: { rating: number; size?: number }) {
   return (
@@ -21,9 +21,8 @@ function Stars({ rating, size = 12 }: { rating: number; size?: number }) {
 }
 
 function ProductCard({ product, onOpen }: { product: Product; onOpen: (product: Product) => void }) {
-  const { addToCart, user, openAuth, lang } = useApp();
+  const { addToCart, user, openAuth, lang, toggleFavorite, isFavorite } = useApp();
   const t = useT(lang);
-  const [wishlist, setWishlist] = useState(false);
   const productText = getProductText(product, lang);
 
   const handleAdd = () => {
@@ -46,31 +45,31 @@ function ProductCard({ product, onOpen }: { product: Product; onOpen: (product: 
           {product.badge}
         </span>
       )}
-      <button onClick={e => { e.stopPropagation(); setWishlist(w => !w); }} aria-label="Wishlist"
-        className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-background/70 backdrop-blur-md border border-border/50 flex items-center justify-center transition-all hover:scale-110">
-        <Heart size={13} className={wishlist ? "fill-rose-500 text-rose-500" : "text-muted-foreground"} />
+      <button onClick={e => { e.stopPropagation(); toggleFavorite(product.id); }} aria-label="Wishlist"
+        className={`absolute top-3 right-3 z-10 w-8 h-8 rounded-full backdrop-blur-md border flex items-center justify-center transition-all hover:scale-110 ${isFavorite(product.id) ? "bg-primary/20 border-primary/50" : "bg-background/75 border-border/50"}`}>
+        <Heart size={13} className={isFavorite(product.id) ? "fill-primary text-primary" : "text-muted-foreground"} />
       </button>
       <div className="aspect-square overflow-hidden bg-muted">
         <img src={product.image} alt={productText.name} loading="lazy"
           onError={event => { event.currentTarget.src = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=700&h=700&q=85"; }}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
       </div>
-      <div className="p-4 flex flex-col gap-2 flex-1">
-        <h3 className="font-semibold text-sm text-foreground leading-snug">{productText.name}</h3>
+      <div className="p-3 sm:p-4 flex flex-col gap-2 flex-1 min-w-0">
+        <h3 className="font-semibold text-sm text-foreground leading-snug line-clamp-2">{productText.name}</h3>
         <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{productText.description}</p>
         <div className="flex items-center gap-1.5 mt-0.5">
           <Stars rating={product.rating} />
           <span className="text-xs text-muted-foreground">({product.reviews})</span>
         </div>
-        <div className="flex items-center justify-between mt-auto pt-2">
-          <div className="flex items-baseline gap-1.5">
-            <span className="font-bold text-foreground">{formatPrice(product.price, lang)}</span>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-auto pt-2">
+          <div className="flex items-baseline gap-1.5 min-w-0">
+            <span className="font-bold text-foreground text-sm sm:text-base break-words">{formatPrice(product.price, lang)}</span>
             {product.originalPrice && (
               <span className="text-xs text-muted-foreground line-through">{formatPrice(product.originalPrice, lang)}</span>
             )}
           </div>
           <motion.button whileTap={{ scale: 0.92 }} onClick={e => { e.stopPropagation(); handleAdd(); }}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-primary text-primary-foreground text-xs font-semibold hover:opacity-85 transition-opacity">
+            className="w-full sm:w-auto flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl bg-primary text-primary-foreground text-xs font-semibold whitespace-nowrap hover:opacity-85 transition-opacity">
             <Plus size={11} /> {t.catalog.add}
           </motion.button>
         </div>
@@ -87,6 +86,7 @@ export default function Home() {
   const searchQuery = searchParams.get("search") ?? "";
 
   const [activeCategory, setActiveCategory] = useState("all");
+  const [activeTag, setActiveTag] = useState("all");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedImage, setSelectedImage] = useState(0);
   const [email, setEmail] = useState("");
@@ -94,8 +94,9 @@ export default function Home() {
 
   const filtered = PRODUCTS.filter(p => {
     const matchCat = activeCategory === "all" || p.category === activeCategory;
+    const matchTag = activeTag === "all" || getProductTags(p).includes(activeTag);
     const matchSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchCat && matchSearch;
+    return matchCat && matchTag && matchSearch;
   });
 
   const visibleProducts = filtered.slice(0, 8);
@@ -223,8 +224,15 @@ export default function Home() {
             </button>
           ))}
         </div>
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-6 -mt-4">
+          {["all", "chocolate", "vegetarian", "gluten-free", "seasonal"].map(tag => (
+            <button key={tag} onClick={() => setActiveTag(tag)} className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${activeTag === tag ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/40"}`}>
+              {tag === "all" ? (lang === "uz" ? "Barcha xususiyatlar" : lang === "ru" ? "Все свойства" : "All features") : tag === "gluten-free" ? "Gluten-free" : tag === "vegetarian" ? (lang === "uz" ? "Vegetarian" : "Vegetarian") : tag === "chocolate" ? (lang === "uz" ? "Shokoladli" : lang === "ru" ? "Шоколадные" : "Chocolate") : (lang === "uz" ? "Mavsumiy" : lang === "ru" ? "Сезонные" : "Seasonal")}
+            </button>
+          ))}
+        </div>
 
-        <motion.div layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <motion.div layout className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
           <AnimatePresence>
             {visibleProducts.map(product => <ProductCard key={product.id} product={product} onOpen={productToOpen => { setSelectedProduct(productToOpen); setSelectedImage(0); }} />)}
           </AnimatePresence>

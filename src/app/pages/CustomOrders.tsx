@@ -11,6 +11,16 @@ interface FormData {
   occasion: string; details: string; budget: string; date: string;
 }
 
+function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="text-xs font-medium text-muted-foreground mb-1.5 block">{label}</label>
+      {children}
+      {error && <p className="text-xs text-destructive mt-1">{error}</p>}
+    </div>
+  );
+}
+
 export default function CustomOrders() {
   const { lang, user } = useApp();
   const t = useT(lang);
@@ -59,14 +69,6 @@ export default function CustomOrders() {
       setLoading(false);
     }
   };
-
-  const Field = ({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) => (
-    <div>
-      <label className="text-xs font-medium text-muted-foreground mb-1.5 block">{label}</label>
-      {children}
-      {error && <p className="text-xs text-destructive mt-1">{error}</p>}
-    </div>
-  );
 
   const inputCls = (err?: string) =>
     `w-full px-4 py-3 rounded-xl bg-muted border text-sm outline-none focus:border-primary transition-colors ${err ? "border-destructive" : "border-border"}`;

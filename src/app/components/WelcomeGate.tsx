@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { motion } from "motion/react";
-import { Check, LockKeyhole, Sparkles, UserRound } from "lucide-react";
+import { Check, ChevronDown, LockKeyhole, Sparkles, UserRound } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import type { Lang } from "../../lib/i18n";
 
@@ -35,6 +35,7 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
   const { lang, setLang, user, openAuth } = useApp();
   const [accepted, setAccepted] = useState(() => localStorage.getItem("candora_welcome_seen") === "true");
   const [consent, setConsent] = useState(false);
+  const [termsOpen, setTermsOpen] = useState(false);
   const text = copy[lang];
 
   useEffect(() => {
@@ -48,6 +49,13 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
     if (!consent) return;
     localStorage.setItem("candora_welcome_seen", "true");
     setAccepted(true);
+  };
+
+  const continueToLogin = () => {
+    if (!consent) return;
+    localStorage.setItem("candora_welcome_seen", "true");
+    setAccepted(true);
+    window.setTimeout(() => openAuth("login"), 0);
   };
 
   if (accepted) return <>{children}</>;
@@ -84,11 +92,23 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
 
           <motion.section initial={{ opacity: 0, scale: .96 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: .12, duration: .6 }} className="bg-card/85 backdrop-blur border border-border rounded-3xl p-6 sm:p-8 shadow-2xl">
             <div className="flex items-center gap-3 mb-7"><LockKeyhole size={18} className="text-primary" /><div><p className="font-semibold">Candora</p><p className="text-xs text-muted-foreground">Your sweet account</p></div></div>
+            <button type="button" onClick={() => setTermsOpen(value => !value)} className="w-full flex items-center justify-between text-sm text-primary mb-3 text-left">
+              <span>{lang === "uz" ? "Candora shartlarini ko'rish" : lang === "ru" ? "Посмотреть условия Candora" : "View Candora terms"}</span>
+              <ChevronDown size={16} className={termsOpen ? "rotate-180 transition-transform" : "transition-transform"} />
+            </button>
+            {termsOpen && (
+              <div className="mb-5 rounded-xl border border-border bg-muted/50 p-4 text-xs text-muted-foreground leading-relaxed space-y-2">
+                <p>{lang === "uz" ? "• Mahsulotlar va narxlar buyurtma berishdan oldin ko'rsatiladi." : lang === "ru" ? "• Товары и цены показываются до оформления заказа." : "• Products and prices are shown before checkout."}</p>
+                <p>{lang === "uz" ? "• Buyurtma ma'lumotlari faqat buyurtmani tayyorlash va yetkazish uchun ishlatiladi." : lang === "ru" ? "• Данные заказа используются только для подготовки и доставки." : "• Order details are used only to prepare and deliver your order."}</p>
+                <p>{lang === "uz" ? "• To'lov va yetkazib berish shartlari checkout bosqichida tasdiqlanadi." : lang === "ru" ? "• Условия оплаты и доставки подтверждаются при оформлении." : "• Payment and delivery terms are confirmed at checkout."}</p>
+                <p>{lang === "uz" ? "• Rozilikni bekor qilish yoki savollar uchun Candora bilan bog'lanishingiz mumkin." : lang === "ru" ? "• Вы можете отозвать согласие или связаться с Candora по вопросам." : "• You can withdraw consent or contact Candora with questions."}</p>
+              </div>
+            )}
             <label className="flex items-start gap-3 text-sm text-muted-foreground cursor-pointer mb-6">
               <input type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} className="mt-1 accent-primary" />
               <span>{text.consent}</span>
             </label>
-            <button disabled={!consent} onClick={() => openAuth("login")} className="w-full py-3.5 rounded-2xl bg-primary text-primary-foreground font-semibold disabled:opacity-40 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+            <button disabled={!consent} onClick={continueToLogin} className="w-full py-3.5 rounded-2xl bg-primary text-primary-foreground font-semibold disabled:opacity-40 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
               <UserRound size={16} /> {text.login}
             </button>
             <button disabled={!consent} onClick={continueAsGuest} className="w-full mt-3 py-3.5 rounded-2xl border border-border font-semibold disabled:opacity-40 hover:bg-muted transition-colors">

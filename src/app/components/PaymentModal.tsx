@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { X, CreditCard, Banknote, CheckCircle2, Loader2, Lock } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { useT } from "../../lib/i18n";
-import { formatCardNumber, formatExpiry } from "../../lib/data";
+import { formatCardNumber, formatExpiry, formatPrice } from "../../lib/data";
 
 interface Props {
   open: boolean;
@@ -98,7 +98,7 @@ export default function PaymentModal({ open, onClose }: Props) {
                       {cartItems.slice(0, 3).map(item => (
                         <div key={item.id} className="flex justify-between text-sm">
                           <span className="text-muted-foreground truncate max-w-[200px]">{item.name} ×{item.quantity}</span>
-                          <span className="font-medium">${item.price * item.quantity}</span>
+                          <span className="font-medium">{formatPrice(item.price * item.quantity, lang)}</span>
                         </div>
                       ))}
                       {cartItems.length > 3 && (
@@ -106,7 +106,7 @@ export default function PaymentModal({ open, onClose }: Props) {
                       )}
                       <div className="h-px bg-border mt-2 pt-2 flex justify-between font-bold text-sm">
                         <span>{t.payment.method}</span>
-                        <span className="text-primary">${total}</span>
+                        <span className="text-primary">{formatPrice(total, lang)}</span>
                       </div>
                     </div>
 
@@ -169,7 +169,7 @@ export default function PaymentModal({ open, onClose }: Props) {
                       {loading ? (
                         <><Loader2 size={16} className="animate-spin" /> {t.payment.processing}</>
                       ) : (
-                        <>{t.payment.placeOrder} — ${total}</>
+                        <>{t.payment.placeOrder} — {formatPrice(total, lang)}</>
                       )}
                     </motion.button>
                   </form>

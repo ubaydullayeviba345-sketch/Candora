@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { User, ShoppingBag, Edit2, Check, X, LogOut, Loader2, Camera, ArrowLeft } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { useT } from "../../lib/i18n";
-import { normalizePhoneInput } from "../../lib/data";
+import { formatPrice, normalizePhoneInput } from "../../lib/data";
 
 export default function Account() {
   const { user, profile, lang, loadingAuth, updateProfile, logout, fetchOrders, orders } = useApp();
@@ -251,7 +251,7 @@ export default function Account() {
                         <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${statusColors[order.status] ?? statusColors.pending}`}>
                           {t.account.status[order.status] ?? order.status}
                         </span>
-                        <span className="font-bold text-primary">${order.total}</span>
+                        <span className="font-bold text-primary">{formatPrice(order.total, lang)}</span>
                       </div>
                     </div>
                     <div className="px-5 py-4">

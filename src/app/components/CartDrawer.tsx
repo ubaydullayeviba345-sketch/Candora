@@ -4,6 +4,7 @@ import { X, Plus, Minus, ShoppingCart, LogIn } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { useT } from "../../lib/i18n";
 import PaymentModal from "./PaymentModal";
+import { formatPrice } from "../../lib/data";
 
 export default function CartDrawer() {
   const { cartOpen, setCartOpen, cartItems, removeFromCart, updateQty, user, openAuth, lang } = useApp();
@@ -67,7 +68,7 @@ export default function CartDrawer() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium truncate">{item.name}</p>
-                          <p className="text-xs text-muted-foreground mt-0.5">${item.price} each</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">{formatPrice(item.price, lang)} each</p>
                           <div className="flex items-center gap-2 mt-2">
                             <button onClick={() => updateQty(item.id, item.quantity - 1)}
                               className="w-6 h-6 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors">
@@ -84,7 +85,7 @@ export default function CartDrawer() {
                           <button onClick={() => removeFromCart(item.id)} className="text-muted-foreground hover:text-destructive transition-colors" aria-label="Remove">
                             <X size={13} />
                           </button>
-                          <span className="text-sm font-bold">${item.price * item.quantity}</span>
+                          <span className="text-sm font-bold">{formatPrice(item.price * item.quantity, lang)}</span>
                         </div>
                       </div>
                     ))}
@@ -96,7 +97,7 @@ export default function CartDrawer() {
                 <div className="px-6 pb-6 pt-4 border-t border-border space-y-3">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">{t.cart.subtotal}</span>
-                    <span className="font-medium">${total}</span>
+                    <span className="font-medium">{formatPrice(total, lang)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">{t.cart.delivery}</span>
@@ -105,14 +106,14 @@ export default function CartDrawer() {
                   <div className="h-px bg-border" />
                   <div className="flex justify-between font-bold text-base">
                     <span>{t.cart.total}</span>
-                    <span>${total}</span>
+                    <span>{formatPrice(total, lang)}</span>
                   </div>
                   <motion.button
                     whileTap={{ scale: 0.98 }}
                     onClick={() => { setCartOpen(false); setPayOpen(true); }}
                     className="w-full py-3.5 rounded-2xl bg-primary text-primary-foreground font-semibold text-sm hover:opacity-90 transition-opacity"
                   >
-                    {t.cart.checkout} — ${total}
+                    {t.cart.checkout} — {formatPrice(total, lang)}
                   </motion.button>
                   <button onClick={() => setCartOpen(false)} className="w-full text-xs text-muted-foreground hover:text-foreground transition-colors text-center py-1">
                     {t.cart.continueShopping}

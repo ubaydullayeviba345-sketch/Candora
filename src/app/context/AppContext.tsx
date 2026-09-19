@@ -29,6 +29,7 @@ interface AppState {
   user: User | null;
   profile: ProfileData | null;
   cartItems: CartItem[];
+  favoriteIds: number[];
   dark: boolean;
   lang: Lang;
   authOpen: boolean;
@@ -58,6 +59,8 @@ interface AppActions {
   removeFromCart: (id: number) => void;
   updateQty: (id: number, qty: number) => void;
   clearCart: () => void;
+  toggleFavorite: (id: number) => void;
+  isFavorite: (id: number) => boolean;
   updateProfile: (data: Partial<ProfileData>) => Promise<void>;
   fetchOrders: () => Promise<void>;
   placeOrder: (order: {
@@ -77,6 +80,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [favoriteIds, setFavoriteIds] = useState<number[]>([]);
   const [dark, setDarkState] = useState(true);
   const [lang, setLangState] = useState<Lang>("uz");
   const [authOpen, setAuthOpen] = useState(false);
@@ -85,6 +89,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loadingAuth, setLoadingAuth] = useState(true);
   const cartSyncRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("candora_cart") ?? "[]");
+      if (Array.isArray(saved)) setCartItems(saved);
+    } catch {
+      setCartItems([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("candora_cart", JSON.stringify(cartItems));
+  }, [cartItems]);
 
   // Apply dark mode to root
   useEffect(() => {
@@ -96,6 +113,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const saved = localStorage.getItem("candora_lang") as Lang | null;
     if (saved && ["en", "uz", "ru"].includes(saved)) setLangState(saved);
   }, []);
+
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("candora_favorites") ?? "[]");
+      if (Array.isArray(saved)) setFavoriteIds(saved.filter((id): id is number => typeof id === "number"));
+    } catch {
+      setFavoriteIds([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("candora_favorites", JSON.stringify(favoriteIds));
+  }, [favoriteIds]);
 
   // Auth listener
   useEffect(() => {
@@ -282,6 +312,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (user) api.saveCart(user.id, []).catch(console.error);
   }, [user]);
 
+  const toggleFavorite = useCallback((id: number) => {
+    setFavoriteIds(prev => prev.includes(id) ? prev.filter(itemId => itemId !== id) : [...prev, id]);
+  }, []);
+
+  const isFavorite = useCallback((id: number) => favoriteIds.includes(id), [favoriteIds]);
+
   const updateProfile = async (data: Partial<ProfileData>) => {
     if (!user) return;
     const updated = { ...profile, ...data } as ProfileData;
@@ -318,11 +354,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   return (
     <Ctx.Provider value={{
-      user, profile, cartItems, dark, lang, authOpen, authTab,
+      user, profile, cartItems, favoriteIds, dark, lang, authOpen, authTab,
       cartOpen, orders, loadingAuth,
       setDark, setLang, openAuth, closeAuth, setCartOpen,
         login, register, resetPassword, updatePassword, loginWithGoogle, loginWithFacebook, loginWithDiscord, logout,
-      addToCart, removeFromCart, updateQty, clearCart,
+      addToCart, removeFromCart, updateQty, clearCart, toggleFavorite, isFavorite,
       updateProfile, fetchOrders, placeOrder,
     }}>
       {children}

@@ -355,6 +355,15 @@ export const formatPrice = (price: number, lang: ProductLanguage) => {
   return `$${price}`;
 };
 
+export const getProductTags = (product: Product) => {
+  const tags = new Set<string>([product.category]);
+  if (product.id % 3 === 0 || product.category === "chocolate") tags.add("chocolate");
+  if (product.id % 4 === 0 || product.category === "seasonal") tags.add("seasonal");
+  if (product.id % 5 === 0 || product.category === "macarons") tags.add("vegetarian");
+  if (product.id % 7 === 0) tags.add("gluten-free");
+  return [...tags];
+};
+
 export const TESTIMONIALS = [
   { name: "Sophia Laurent", role: "Wedding Client", initials: "SL", rating: 5,
     text: "Candora crafted our wedding cake and every macaron was pure poetry. Absolutely world-class." },

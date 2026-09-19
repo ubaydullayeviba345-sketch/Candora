@@ -53,8 +53,8 @@ function ProductCard({ product }: { product: Product }) {
           {product.badge}
         </span>
       )}
-      <button onClick={() => setWished(w => !w)} className="absolute top-3 right-3 z-10 w-7 h-7 rounded-full bg-background/70 backdrop-blur-md border border-border/50 flex items-center justify-center hover:scale-110 transition-all">
-        <Heart size={12} className={wished ? "fill-rose-500 text-rose-500" : "text-muted-foreground"} />
+      <button onClick={() => setWished(w => !w)} aria-label="Wishlist" className={`absolute top-3 right-3 z-10 w-7 h-7 rounded-full backdrop-blur-md border flex items-center justify-center hover:scale-110 transition-all ${wished ? "bg-primary/20 border-primary/50" : "bg-background/75 border-border/50"}`}>
+        <Heart size={12} className={wished ? "fill-primary text-primary" : "text-muted-foreground"} />
       </button>
       <div className="aspect-square overflow-hidden bg-muted">
         <img src={product.image} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
