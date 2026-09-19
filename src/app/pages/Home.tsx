@@ -8,6 +8,7 @@ import {
 import { useApp } from "../context/AppContext";
 import { useT } from "../../lib/i18n";
 import { PRODUCTS, CATEGORIES, TESTIMONIALS, formatPrice, getProductTags, getProductText, type Product } from "../../lib/data";
+import LotterySection from "../components/LotterySection";
 
 function Stars({ rating, size = 12 }: { rating: number; size?: number }) {
   return (
@@ -380,28 +381,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Newsletter */}
-      <section className="max-w-xl mx-auto px-4 sm:px-6 py-20 text-center">
-        <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-3">{t.newsletter.badge}</p>
-        <h2 className="font-display text-3xl sm:text-4xl font-bold mb-4">{t.newsletter.title}</h2>
-        <p className="text-muted-foreground text-sm mb-8 leading-relaxed">{t.newsletter.desc}</p>
-        {subscribed ? (
-          <motion.div initial={{ scale: 0.88, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-            className="flex items-center justify-center gap-2 text-emerald-500 font-medium">
-            <Check size={18} /> <span>{t.newsletter.subscribed}</span>
-          </motion.div>
-        ) : (
-          <form onSubmit={e => { e.preventDefault(); if (email) setSubscribed(true); }} className="flex gap-3 max-w-sm mx-auto">
-            <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
-              placeholder={t.newsletter.placeholder}
-              className="flex-1 px-4 py-3 rounded-xl bg-muted border border-border text-sm outline-none focus:border-primary transition-colors" />
-            <motion.button whileTap={{ scale: 0.96 }} type="submit"
-              className="px-5 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:opacity-90 transition-opacity flex-shrink-0">
-              {t.newsletter.subscribe}
-            </motion.button>
-          </form>
-        )}
-      </section>
+      {/* Candora Family 100% Win Lottery Section */}
+      <LotterySection />
     </div>
   );
 }
+

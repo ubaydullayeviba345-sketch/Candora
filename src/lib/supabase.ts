@@ -1,7 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 
-const PROJECT_ID = "lvluoarlzrhiqtriphbm";
+const PROJECT_ID = import.meta.env.VITE_SUPABASE_PROJECT_ID || "lvluoarlzrhiqtriphbm";
 const ANON_KEY =
+  import.meta.env.VITE_SUPABASE_ANON_KEY ||
   "sb_publishable_53MLGGZx_i3H38XZ8kXX9Q_yLcur3_d";
 
 const SUPABASE_URL = `https://${PROJECT_ID}.supabase.co`;
@@ -56,4 +57,11 @@ export const api = {
     body: JSON.stringify(order),
   }),
   getAdminOverview: async () => request("/admin/overview"),
+  joinLottery: async (email: string, prize?: string) => {
+    return request("/lottery", {
+      method: "POST",
+      body: JSON.stringify({ email, prize }),
+    });
+  },
 };
+

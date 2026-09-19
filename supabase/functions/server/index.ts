@@ -177,4 +177,82 @@ app.post(`${BASE}/custom-orders`, async (c) => {
   return c.json({ success: true, id });
 });
 
+// ── Lottery / Candora Family Subscribers ─────────────────────────────────────
+
+app.post(`${BASE}/lottery`, async (c) => {
+  const body = await c.req.json().catch(() => ({}));
+  const email = String(body.email || "").trim().toLowerCase();
+
+  if (!email || !email.includes("@")) {
+    return c.json({ error: "Email noto'g'ri kiritildi" }, 400);
+  }
+
+  // Check if subscriber already exists
+  const existingSub = await kv.get(`subscriber:${email}`);
+  if (existingSub) {
+    return c.json({
+      success: true,
+      alreadySubscribed: true,
+      prize: existingSub.prize,
+      message: "Siz avval ham qatnashgansiz! Sizning yutug'ingiz saqlangan.",
+    });
+  }
+
+  // Prize calculation / validation
+  const clientPrize = body.prize;
+  let prizeName = "50 000 so‘mlik promokod / bonus 🎟️";
+  let prizeId = "promo50k";
+
+  if (clientPrize && typeof clientPrize === "object") {
+    prizeName = clientPrize.name?.uz || clientPrize.name || prizeName;
+    prizeId = clientPrize.id || prizeId;
+  } else if (typeof clientPrize === "string") {
+    prizeName = clientPrize;
+  }
+
+  const newSubscriber = {
+    email,
+    prize: {
+      id: prizeId,
+      name: prizeName,
+    },
+    createdAt: new Date().toISOString(),
+  };
+
+  // Save to kv_store
+  await kv.set(`subscriber:${email}`, newSubscriber);
+  const allSubscribers: string[] = (await kv.get("subscribers:all")) ?? [];
+  if (!allSubscribers.includes(email)) {
+    await kv.set("subscribers:all", [...allSubscribers, email]);
+  }
+
+  // Telegram Bot Notification
+  const botToken = Deno.env.get("TELEGRAM_BOT_TOKEN") || "8897130943:AAEAaIC_fyU5Yp8fQ4A9lXKjbGoQpioNEOU";
+  const chatId = Deno.env.get("TELEGRAM_CHAT_ID") || "7767810012";
+
+  try {
+    const timeFormatted = new Date().toLocaleString("uz-UZ", { timeZone: "Asia/Tashkent" });
+    const text = `🎉 *Candora oilasiga yangi a'zo qo'shildi!*\n\n• *Email:* \`${email}\`\n• *Yutug'i:* ${prizeName}\n• *Vaqt:* ${timeFormatted}`;
+
+    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text,
+        parse_mode: "Markdown",
+      }),
+    });
+  } catch (err) {
+    console.error("Telegram notification error:", err);
+  }
+
+  return c.json({
+    success: true,
+    email,
+    prize: newSubscriber.prize,
+  });
+});
+
 Deno.serve(app.fetch);
+
