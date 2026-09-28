@@ -236,7 +236,7 @@ export default function Account() {
                       type={showNewPass ? "text" : "password"}
                       value={newPassword}
                       onChange={e => setNewPassword(e.target.value)}
-                      placeholder={t.account.newPassword}
+                      placeholder="••••••••"
                       minLength={6}
                       className={`w-full px-4 py-3 pr-10 rounded-xl bg-muted border text-sm outline-none transition-colors ${
                         (confirmPassword.length > 0 && newPassword !== confirmPassword)
@@ -263,7 +263,7 @@ export default function Account() {
                       type={showConfirmPass ? "text" : "password"}
                       value={confirmPassword}
                       onChange={e => setConfirmPassword(e.target.value)}
-                      placeholder={t.account.confirmPassword}
+                      placeholder="••••••••"
                       minLength={6}
                       className={`w-full px-4 py-3 pr-10 rounded-xl bg-muted border text-sm outline-none transition-colors ${
                         (confirmPassword.length > 0 && newPassword !== confirmPassword)

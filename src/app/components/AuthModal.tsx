@@ -495,7 +495,7 @@ export default function AuthModal() {
                                   ? "border-destructive text-destructive focus:border-destructive"
                                   : "border-border focus:border-primary"
                               }`}
-                              placeholder={t.auth.newPassword}
+                              placeholder="••••••••"
                               minLength={6}
                             />
                             <button
@@ -524,7 +524,7 @@ export default function AuthModal() {
                                   ? "border-emerald-500/60 focus:border-emerald-500"
                                   : "border-border focus:border-primary"
                               }`}
-                              placeholder={t.auth.confirmPassword}
+                              placeholder="••••••••"
                               minLength={6}
                             />
                             <button
