@@ -10,6 +10,7 @@ import {
   ExternalLink,
   ShieldCheck,
   BellRing,
+  CheckCircle2,
 } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { useT } from "../../lib/i18n";
@@ -93,9 +94,11 @@ export default function LotterySection() {
 
       setIsModalOpen(true);
       fireConfetti();
+      setEmail("");
     } catch {
       setIsModalOpen(true);
       fireConfetti();
+      setEmail("");
     } finally {
       setLoading(false);
     }
@@ -225,7 +228,7 @@ export default function LotterySection() {
         </form>
       </div>
 
-      {/* POPUP / MODAL: Tabrik va Telegramga yo'naltirish */}
+      {/* POPUP / MODAL */}
       <AnimatePresence>
         {isModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
@@ -254,7 +257,7 @@ export default function LotterySection() {
                 {isAlreadySaved ? t.lottery.alreadyParticipated : t.lottery.congratsTitle}
               </h3>
 
-              {/* Info text: Sovg'alar Telegram kanalda tez orada aniqlanadi */}
+              {/* Info text */}
               <div className="p-4 rounded-2xl bg-gradient-to-r from-orange-950/60 via-amber-950/40 to-orange-950/60 border border-orange-500/30 my-4 shadow-inner text-left">
                 <div className="flex items-start gap-3">
                   <BellRing size={22} className="text-amber-400 flex-shrink-0 mt-0.5 animate-bounce" />
@@ -271,7 +274,6 @@ export default function LotterySection() {
 
               {/* Action: Telegram Channel Buttons */}
               <div className="space-y-2.5 mt-5">
-                {/* 1. To'g'ridan-to'g'ri kanalni ochish (oraliq sahifasiz to'liq postlar bilan) */}
                 <a
                   href="https://t.me/s/candora_uz"
                   target="_blank"
@@ -283,31 +285,6 @@ export default function LotterySection() {
                   <ExternalLink size={14} className="opacity-80" />
                 </a>
 
-                {/* 2. Telegram Web orqali kirish (kompyuter va brauzer uchun) */}
-                <a
-                  href="https://web.telegram.org/k/#@candora_uz"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-stone-200 font-semibold text-xs flex items-center justify-center gap-2 transition-all transform active:scale-95 cursor-pointer"
-                >
-                  <span>🌐 Telegram Web orqali ochish</span>
-                  <ExternalLink size={12} className="opacity-70" />
-                </a>
-
-                {/* 3. Kanal nomini ko'rsatish va nusxa olish */}
-                <div className="p-2.5 rounded-xl bg-black/40 border border-white/10 text-xs text-stone-300 flex items-center justify-between">
-                  <span>Kanal qidiruvi: <b className="text-amber-300">@candora_uz</b></span>
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText("@candora_uz");
-                      alert("Kanal username nusxalandi: @candora_uz");
-                    }}
-                    className="px-2.5 py-1 rounded-lg bg-orange-600/30 hover:bg-orange-600/50 text-amber-200 text-[11px] font-semibold transition-colors"
-                  >
-                    Nusxa olish
-                  </button>
-                </div>
-
                 <button
                   onClick={() => setIsModalOpen(false)}
                   className="w-full py-2 rounded-xl text-stone-400 hover:text-stone-200 text-xs font-medium transition-colors"
@@ -315,7 +292,6 @@ export default function LotterySection() {
                   {t.lottery.close}
                 </button>
               </div>
-
             </motion.div>
           </div>
         )}

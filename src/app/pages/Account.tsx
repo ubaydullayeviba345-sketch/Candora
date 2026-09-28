@@ -105,7 +105,11 @@ export default function Account() {
             <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-1">{t.account.profile}</p>
             <h1 className="font-display text-3xl font-bold">{t.account.profile}</h1>
           </div>
-          <button onClick={logout} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-destructive transition-colors">
+          <button
+            type="button"
+            onClick={() => void logout()}
+            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-destructive transition-colors cursor-pointer px-3 py-1.5 rounded-lg hover:bg-muted"
+          >
             <LogOut size={15} /> {t.account.logout}
           </button>
         </div>
@@ -221,6 +225,20 @@ export default function Account() {
                 {t.account.updatePassword}
               </button>
             </div>
+          </div>
+          <div className="mt-8 pt-6 border-t border-border flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold">{t.account.logout}</p>
+              <p className="text-xs text-muted-foreground">{user.email}</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => void logout()}
+              className="px-5 py-2.5 rounded-xl border border-destructive/30 bg-destructive/10 text-destructive text-sm font-semibold hover:bg-destructive hover:text-destructive-foreground transition-colors flex items-center gap-2 cursor-pointer"
+            >
+              <LogOut size={16} />
+              {t.account.logout}
+            </button>
           </div>
           </>
         )}

@@ -14,9 +14,10 @@ const headers = async (): Promise<Record<string, string>> => {
   const {
     data: { session },
   } = await supabase.auth.getSession();
+  
   return {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${session?.access_token ?? ANON_KEY}`,
+    ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
   };
 };
 

@@ -10,7 +10,7 @@ import type { CartItem, Product } from "../../lib/data";
 export interface ProfileData {
   firstName: string;
   lastName: string;
-  phone: string;
+  phone?: string;
   email: string;
   avatar?: string;
 }
@@ -53,6 +53,7 @@ interface AppActions {
   updatePassword: (password: string) => Promise<{ error?: string }>;
   loginWithGoogle: () => Promise<{ error?: string }>;
   loginWithFacebook: () => Promise<{ error?: string }>;
+  loginWithTwitter: () => Promise<{ error?: string }>;
   loginWithDiscord: () => Promise<{ error?: string }>;
   logout: () => Promise<void>;
   addToCart: (product: Product) => void;
@@ -137,6 +138,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
+        if (_event === "SIGNED_OUT") {
+          setUser(null);
+          setProfile(null);
+          setCartItems([]);
+          setOrders([]);
+          return;
+        }
+
         setUser(session?.user ?? null);
         if (session?.user) void loadUserData(session.user);
         else {
@@ -217,18 +226,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
         data: {
           firstName: profileData.firstName,
           lastName: profileData.lastName,
-          phone: profileData.phone,
+          phone: profileData.phone || "",
         },
       },
     });
     if (error) return { error: error.message };
-    if (data.user && data.session) {
-      try {
-        await api.saveProfile(data.user.id, profileData);
-      } catch (profileError) {
-        return { error: profileError instanceof Error ? profileError.message : "Profile save failed" };
-      }
+    if (data.user) {
+      localStorage.setItem(`candora_profile:${data.user.id}`, JSON.stringify(profileData));
       setProfile(profileData);
+      // Non-blocking sync to Edge Function
+      api.saveProfile(data.user.id, profileData).catch(err => {
+        console.warn("Edge function saveProfile warning:", err);
+      });
     }
     return { needsConfirmation: !data.session };
   };
@@ -261,6 +270,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return error ? { error: error.message } : {};
   };
 
+  const loginWithTwitter = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "twitter",
+      options: { redirectTo: window.location.origin },
+    });
+    return error ? { error: error.message } : {};
+  };
+
   const loginWithDiscord = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "discord",
@@ -270,10 +287,49 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
-    await supabase.auth.signOut();
-    setCartItems([]);
-    setProfile(null);
-    setOrders([]);
+    try {
+      setUser(null);
+      setProfile(null);
+      setCartItems([]);
+      setOrders([]);
+
+      try {
+        const keysToRemove: string[] = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (
+            key &&
+            (key.startsWith("sb-") ||
+             key.includes("auth-token") ||
+             key.includes("supabase") ||
+             key.startsWith("candora_profile") ||
+             key.startsWith("candora_avatar") ||
+             key === "candora_cart" ||
+             key === "candora_favorites")
+          ) {
+            keysToRemove.push(key);
+          }
+        }
+        keysToRemove.forEach(k => localStorage.removeItem(k));
+        sessionStorage.clear();
+      } catch (storageErr) {
+        console.error("Storage clean error:", storageErr);
+      }
+
+      await Promise.race([
+        supabase.auth.signOut({ scope: "local" }),
+        new Promise(resolve => setTimeout(resolve, 800)),
+      ]).catch(() => {});
+
+      await Promise.race([
+        supabase.auth.signOut(),
+        new Promise(resolve => setTimeout(resolve, 800)),
+      ]).catch(() => {});
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      window.location.href = "/";
+    }
   };
 
   const addToCart = useCallback((product: Product) => {
@@ -357,7 +413,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       user, profile, cartItems, favoriteIds, dark, lang, authOpen, authTab,
       cartOpen, orders, loadingAuth,
       setDark, setLang, openAuth, closeAuth, setCartOpen,
-        login, register, resetPassword, updatePassword, loginWithGoogle, loginWithFacebook, loginWithDiscord, logout,
+        login, register, resetPassword, updatePassword, loginWithGoogle, loginWithFacebook, loginWithTwitter, loginWithDiscord, logout,
       addToCart, removeFromCart, updateQty, clearCart, toggleFavorite, isFavorite,
       updateProfile, fetchOrders, placeOrder,
     }}>

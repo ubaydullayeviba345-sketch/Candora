@@ -258,11 +258,30 @@ export default function Layout() {
                     </button>
                   ))}
                 </div>
-                {!user && (
+                {!user ? (
                   <button onClick={() => { openAuth("login"); setMenuOpen(false); }}
                     className="w-full mt-2 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity">
                     {t.nav.login}
                   </button>
+                ) : (
+                  <div className="pt-2 border-t border-border mt-3 space-y-1">
+                    <Link
+                      to="/account"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-muted text-foreground transition-colors"
+                    >
+                      <User size={15} className="text-primary" />
+                      <span>{t.nav.account} ({profile?.firstName || user.email})</span>
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => { setMenuOpen(false); void logout(); }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
+                    >
+                      <LogOut size={15} />
+                      <span>{t.nav.logout}</span>
+                    </button>
+                  </div>
                 )}
               </div>
             </motion.div>
