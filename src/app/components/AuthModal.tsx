@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { X, Eye, EyeOff, Loader2 } from "lucide-react";
+import { X, Eye, EyeOff, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { useT } from "../../lib/i18n";
 import { normalizePhoneInput } from "../../lib/data";
@@ -28,6 +28,7 @@ export default function AuthModal() {
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("+998 ");
   const [showPass, setShowPass] = useState(false);
+  const [showConfirmPass, setShowConfirmPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -41,8 +42,13 @@ export default function AuthModal() {
     setPhone("+998 ");
     setError("");
     setShowPass(false);
+    setShowConfirmPass(false);
     setNotice("");
   };
+
+  const isPasswordMismatch = confirmPassword.length > 0 && password !== confirmPassword;
+  const isPasswordMatched =
+    password.length >= 6 && confirmPassword.length >= 6 && password === confirmPassword;
 
   const handleClose = () => {
     reset();
@@ -472,46 +478,94 @@ export default function AuthModal() {
                         placeholder={t.auth.phonePlaceholder}
                       />
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="text-xs font-medium text-muted-foreground mb-1 block">
-                          {t.auth.password}
-                        </label>
-                        <div className="relative">
-                          <input
-                            type={showPass ? "text" : "password"}
-                            required
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-4 py-3 pr-10 rounded-xl bg-muted border border-border text-sm outline-none focus:border-primary transition-colors"
-                            placeholder="••••••••"
-                            minLength={6}
-                          />
+                    <div className="space-y-1.5">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                            {t.auth.newPassword}
+                          </label>
+                          <div className="relative">
+                            <input
+                              type={showPass ? "text" : "password"}
+                              required
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                              className={`w-full px-4 py-3 pr-10 rounded-xl bg-muted border text-sm outline-none transition-colors ${
+                                isPasswordMismatch
+                                  ? "border-destructive text-destructive focus:border-destructive"
+                                  : "border-border focus:border-primary"
+                              }`}
+                              placeholder={t.auth.newPassword}
+                              minLength={6}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowPass((s) => !s)}
+                              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+                            >
+                              {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
+                            </button>
+                          </div>
+                        </div>
+                        <div>
+                          <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                            {t.auth.confirmPassword}
+                          </label>
+                          <div className="relative">
+                            <input
+                              type={showConfirmPass ? "text" : "password"}
+                              required
+                              value={confirmPassword}
+                              onChange={(e) => setConfirmPassword(e.target.value)}
+                              className={`w-full px-4 py-3 pr-10 rounded-xl bg-muted border text-sm outline-none transition-colors ${
+                                isPasswordMismatch
+                                  ? "border-destructive text-destructive focus:border-destructive"
+                                  : isPasswordMatched
+                                  ? "border-emerald-500/60 focus:border-emerald-500"
+                                  : "border-border focus:border-primary"
+                              }`}
+                              placeholder={t.auth.confirmPassword}
+                              minLength={6}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowConfirmPass((s) => !s)}
+                              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+                            >
+                              {showConfirmPass ? <EyeOff size={15} /> : <Eye size={15} />}
+                            </button>
+                          </div>
                         </div>
                       </div>
-                      <div>
-                        <label className="text-xs font-medium text-muted-foreground mb-1 block">
-                          {t.account.confirmPassword}
-                        </label>
-                        <div className="relative">
-                          <input
-                            type={showPass ? "text" : "password"}
-                            required
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="w-full px-4 py-3 pr-10 rounded-xl bg-muted border border-border text-sm outline-none focus:border-primary transition-colors"
-                            placeholder="••••••••"
-                            minLength={6}
-                          />
-                          <button
-                            type="button"
-                            onClick={() => setShowPass((s) => !s)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
-                          >
-                            {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
-                          </button>
-                        </div>
-                      </div>
+
+                      {/* Parol pasidan qizil yozuv */}
+                      {isPasswordMismatch && (
+                        <motion.p
+                          initial={{ opacity: 0, y: -4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="text-xs text-destructive font-medium flex items-center gap-1.5 pt-1"
+                        >
+                          <AlertCircle size={14} className="shrink-0" />
+                          <span>{t.auth.passwordMismatch}</span>
+                        </motion.p>
+                      )}
+
+                      {isPasswordMatched && (
+                        <motion.p
+                          initial={{ opacity: 0, y: -4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1.5 pt-1"
+                        >
+                          <CheckCircle2 size={14} className="shrink-0" />
+                          <span>
+                            {lang === "uz"
+                              ? "Parollar mos keldi"
+                              : lang === "ru"
+                              ? "Пароли совпадают"
+                              : "Passwords match"}
+                          </span>
+                        </motion.p>
+                      )}
                     </div>
                     <button
                       type="submit"

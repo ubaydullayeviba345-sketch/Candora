@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router";
 import { motion } from "motion/react";
-import { User, ShoppingBag, Edit2, Check, X, LogOut, Loader2, Camera, ArrowLeft } from "lucide-react";
+import { User, ShoppingBag, Edit2, Check, X, LogOut, Loader2, Camera, ArrowLeft, Eye, EyeOff, AlertCircle, CheckCircle2 } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { useT } from "../../lib/i18n";
 import { formatPrice, normalizePhoneInput } from "../../lib/data";
@@ -16,6 +16,8 @@ export default function Account() {
   const [saving, setSaving] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showNewPass, setShowNewPass] = useState(false);
+  const [showConfirmPass, setShowConfirmPass] = useState(false);
   const [passwordMessage, setPasswordMessage] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [avatarOpen, setAvatarOpen] = useState(false);
@@ -212,16 +214,96 @@ export default function Account() {
               <h2 className="font-semibold">{t.account.password}</h2>
             </div>
             <div className="p-6 space-y-4">
-              {passwordError && <p className="text-sm text-destructive">{passwordError}</p>}
-              {passwordMessage && <p className="text-sm text-primary">{passwordMessage}</p>}
-              <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)}
-                placeholder={t.account.newPassword} minLength={6}
-                className="w-full px-4 py-3 rounded-xl bg-muted border border-border text-sm outline-none focus:border-primary transition-colors" />
-              <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
-                placeholder={t.account.confirmPassword} minLength={6}
-                className="w-full px-4 py-3 rounded-xl bg-muted border border-border text-sm outline-none focus:border-primary transition-colors" />
-              <button onClick={handlePasswordSave}
-                className="px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity">
+              {passwordError && (
+                <p className="text-sm text-destructive flex items-center gap-1.5 font-medium">
+                  <AlertCircle size={15} />
+                  {passwordError}
+                </p>
+              )}
+              {passwordMessage && (
+                <p className="text-sm text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 font-medium">
+                  <CheckCircle2 size={15} />
+                  {passwordMessage}
+                </p>
+              )}
+              <div className="space-y-3">
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                    {t.account.newPassword}
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showNewPass ? "text" : "password"}
+                      value={newPassword}
+                      onChange={e => setNewPassword(e.target.value)}
+                      placeholder={t.account.newPassword}
+                      minLength={6}
+                      className={`w-full px-4 py-3 pr-10 rounded-xl bg-muted border text-sm outline-none transition-colors ${
+                        (confirmPassword.length > 0 && newPassword !== confirmPassword)
+                          ? "border-destructive text-destructive focus:border-destructive"
+                          : "border-border focus:border-primary"
+                      }`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNewPass(s => !s)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+                    >
+                      {showNewPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                    {t.account.confirmPassword}
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showConfirmPass ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={e => setConfirmPassword(e.target.value)}
+                      placeholder={t.account.confirmPassword}
+                      minLength={6}
+                      className={`w-full px-4 py-3 pr-10 rounded-xl bg-muted border text-sm outline-none transition-colors ${
+                        (confirmPassword.length > 0 && newPassword !== confirmPassword)
+                          ? "border-destructive text-destructive focus:border-destructive"
+                          : (newPassword.length >= 6 && confirmPassword.length >= 6 && newPassword === confirmPassword)
+                          ? "border-emerald-500/60 focus:border-emerald-500"
+                          : "border-border focus:border-primary"
+                      }`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPass(s => !s)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+                    >
+                      {showConfirmPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Parol pasidan qizil yozuv */}
+                {confirmPassword.length > 0 && newPassword !== confirmPassword && (
+                  <p className="text-xs text-destructive font-medium flex items-center gap-1.5 mt-1 animate-in fade-in">
+                    <AlertCircle size={14} className="shrink-0" />
+                    <span>{t.account.passwordMismatch}</span>
+                  </p>
+                )}
+
+                {newPassword.length >= 6 && confirmPassword.length >= 6 && newPassword === confirmPassword && (
+                  <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1.5 mt-1 animate-in fade-in">
+                    <CheckCircle2 size={14} className="shrink-0" />
+                    <span>{lang === "uz" ? "Parollar mos keldi" : lang === "ru" ? "Пароли совпадают" : "Passwords match"}</span>
+                  </p>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={handlePasswordSave}
+                className="px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity cursor-pointer"
+              >
                 {t.account.updatePassword}
               </button>
             </div>
