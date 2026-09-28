@@ -7,9 +7,14 @@
 
   if ("serviceWorker" in navigator && import.meta.env.PROD) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("/sw.js").catch(error => {
-        console.warn("Candora offline support is unavailable", error);
-      });
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then(reg => {
+          reg.update().catch(() => {});
+        })
+        .catch(error => {
+          console.warn("Candora offline support is unavailable", error);
+        });
     });
   }
   
