@@ -94,7 +94,7 @@ export default function Account() {
     pending: "bg-amber-500/15 text-amber-600 dark:text-amber-400",
     processing: "bg-blue-500/15 text-blue-600 dark:text-blue-400",
     shipped: "bg-purple-500/15 text-purple-600 dark:text-purple-400",
-    delivered: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
+    delivered: "bg-emerald-500/15 text-primary",
   };
 
   return (
@@ -221,7 +221,7 @@ export default function Account() {
                 </p>
               )}
               {passwordMessage && (
-                <p className="text-sm text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 font-medium">
+                <p className="text-sm text-primary flex items-center gap-1.5 font-medium">
                   <CheckCircle2 size={15} />
                   {passwordMessage}
                 </p>
@@ -269,7 +269,7 @@ export default function Account() {
                         (confirmPassword.length > 0 && newPassword !== confirmPassword)
                           ? "border-destructive text-destructive focus:border-destructive"
                           : (newPassword.length >= 6 && confirmPassword.length >= 6 && newPassword === confirmPassword)
-                          ? "border-emerald-500/60 focus:border-emerald-500"
+                          ? "border-primary/60 focus:border-primary text-primary"
                           : "border-border focus:border-primary"
                       }`}
                     />
@@ -292,7 +292,7 @@ export default function Account() {
                 )}
 
                 {newPassword.length >= 6 && confirmPassword.length >= 6 && newPassword === confirmPassword && (
-                  <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1.5 mt-1 animate-in fade-in">
+                  <p className="text-xs text-primary font-medium flex items-center gap-1.5 mt-1 animate-in fade-in">
                     <CheckCircle2 size={14} className="shrink-0" />
                     <span>{lang === "uz" ? "Parollar mos keldi" : lang === "ru" ? "Пароли совпадают" : "Passwords match"}</span>
                   </p>

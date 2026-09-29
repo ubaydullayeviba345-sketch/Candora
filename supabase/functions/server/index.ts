@@ -254,5 +254,11 @@ app.post(`${BASE}/lottery`, async (c) => {
   });
 });
 
+app.get(`${BASE}/admin/lottery-users`, async (c) => {
+  // Return all subscribers
+  const allSubscribers: string[] = (await kv.get("subscribers:all")) ?? [];
+  return c.json({ success: true, subscribers: allSubscribers });
+});
+
 Deno.serve(app.fetch);
 

@@ -521,7 +521,7 @@ export default function AuthModal() {
                                 isPasswordMismatch
                                   ? "border-destructive text-destructive focus:border-destructive"
                                   : isPasswordMatched
-                                  ? "border-emerald-500/60 focus:border-emerald-500"
+                                  ? "border-primary/60 focus:border-primary text-primary"
                                   : "border-border focus:border-primary"
                               }`}
                               placeholder="••••••••"
@@ -554,7 +554,7 @@ export default function AuthModal() {
                         <motion.p
                           initial={{ opacity: 0, y: -4 }}
                           animate={{ opacity: 1, y: 0 }}
-                          className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1.5 pt-1"
+                          className="text-xs text-primary font-medium flex items-center gap-1.5 pt-1"
                         >
                           <CheckCircle2 size={14} className="shrink-0" />
                           <span>
