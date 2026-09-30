@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import confetti from "canvas-confetti";
 import {
@@ -16,6 +16,7 @@ import { useApp } from "../context/AppContext";
 import { useT } from "../../lib/i18n";
 import { isValidEmail } from "../../lib/lottery";
 import { api } from "../../lib/supabase";
+import PrizeVerification from "./PrizeVerification";
 
 export default function LotterySection() {
   const { lang } = useApp();
@@ -171,61 +172,7 @@ export default function LotterySection() {
         </div>
 
         {/* Input Form */}
-        <form onSubmit={handleJoin} className="max-w-xl mx-auto">
-          <div className="flex flex-col sm:flex-row gap-3 p-1.5 rounded-2xl sm:rounded-full bg-black/40 border border-orange-500/30 backdrop-blur-xl shadow-2xl focus-within:border-orange-500 transition-all">
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                if (error) setError("");
-              }}
-              placeholder={t.lottery.emailPlaceholder}
-              disabled={loading}
-              className="flex-1 px-5 py-3.5 rounded-xl sm:rounded-full bg-transparent text-white placeholder:text-stone-400 text-sm outline-none font-medium"
-            />
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative px-8 py-3.5 rounded-xl sm:rounded-full bg-gradient-to-r from-orange-500 via-amber-600 to-orange-600 text-white font-bold text-sm shadow-lg shadow-orange-900/40 hover:from-orange-400 hover:to-amber-500 transition-all transform active:scale-95 disabled:opacity-70 flex items-center justify-center gap-2"
-            >
-              {loading ? (
-                <>
-                  <Loader2 size={16} className="animate-spin" />
-                  <span>{t.lottery.loading}</span>
-                </>
-              ) : (
-                <>
-                  <Gift size={16} className="group-hover:rotate-12 transition-transform" />
-                  <span>{t.lottery.joinButton}</span>
-                </>
-              )}
-            </button>
-          </div>
-
-          {error && (
-            <motion.p
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-rose-400 text-xs mt-3 font-medium"
-            >
-              {error}
-            </motion.p>
-          )}
-
-          <div className="flex items-center justify-center gap-2 text-stone-400 text-[11px] mt-4">
-            <ShieldCheck size={14} className="text-amber-500/80" />
-            <span>
-              {lang === "uz"
-                ? "G'oliblar rasmiy Telegram kanalimizda jonli aniqlanadi!"
-                : lang === "ru"
-                ? "Победители будут определены в нашем официальном Telegram-канале!"
-                : "Winners will be announced on our official Telegram channel!"}
-            </span>
-          </div>
-        </form>
+        <PrizeVerification lang={lang} />
       </div>
 
       {/* POPUP / MODAL */}
@@ -274,14 +221,16 @@ export default function LotterySection() {
 
               {/* Action: Telegram Channel Buttons */}
               <div className="space-y-2.5 mt-5">
-                <button
-                  onClick={openTelegramChannel}
+                <a
+                  href="https://t.me/s/candora_uz"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-full py-3.5 px-5 rounded-xl bg-gradient-to-r from-[#229ED9] via-[#0088cc] to-[#0077b5] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg hover:shadow-cyan-500/30 transition-all transform active:scale-95 cursor-pointer"
                 >
                   <Send size={16} />
                   <span>{t.lottery.joinTelegram} (@candora_uz)</span>
                   <ExternalLink size={14} className="opacity-80" />
-                </button>
+                </a>
 
                 <button
                   onClick={() => setIsModalOpen(false)}
@@ -297,3 +246,4 @@ export default function LotterySection() {
     </section>
   );
 }
+
