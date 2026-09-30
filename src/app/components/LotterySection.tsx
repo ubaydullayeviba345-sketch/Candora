@@ -171,8 +171,8 @@ export default function LotterySection() {
         </div>
 
         {/* Input Form */}
-        <form onSubmit={handleJoin} className="max-w-xl mx-auto">
-          <div className="flex flex-col sm:flex-row gap-3 p-1.5 rounded-2xl sm:rounded-full bg-black/40 border border-orange-500/30 backdrop-blur-xl shadow-2xl focus-within:border-orange-500 transition-all">
+        <form onSubmit={handleJoin} className="max-w-xl mx-auto relative z-10">
+          <div className="flex flex-col sm:flex-row gap-3 p-1.5 rounded-2xl sm:rounded-full bg-[#1c120c]/80 border border-orange-500/30 shadow-2xl focus-within:border-orange-500 transition-all isolate relative">
             <input
               type="email"
               required
@@ -183,13 +183,13 @@ export default function LotterySection() {
               }}
               placeholder={t.lottery.emailPlaceholder}
               disabled={loading}
-              className="flex-1 px-5 py-3.5 rounded-xl sm:rounded-full bg-transparent text-white placeholder:text-stone-400 text-sm outline-none font-medium"
+              className="flex-1 px-5 py-3.5 rounded-xl sm:rounded-full bg-transparent text-white placeholder:text-stone-500 text-sm outline-none font-medium focus:ring-0"
             />
 
             <button
               type="submit"
               disabled={loading}
-              className="group relative px-8 py-3.5 rounded-xl sm:rounded-full bg-gradient-to-r from-orange-500 via-amber-600 to-orange-600 text-white font-bold text-sm shadow-lg shadow-orange-900/40 hover:from-orange-400 hover:to-amber-500 transition-all transform active:scale-95 disabled:opacity-70 flex items-center justify-center gap-2"
+              className="group relative px-8 py-3.5 rounded-xl sm:rounded-full bg-gradient-to-r from-orange-500 via-amber-600 to-orange-600 text-white font-bold text-sm shadow-md hover:from-orange-400 hover:to-amber-500 transition-all transform active:scale-95 disabled:opacity-70 flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
