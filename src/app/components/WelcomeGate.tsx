@@ -1,34 +1,13 @@
-import { useEffect, useState, type ReactNode } from "react";
+﻿import { useEffect, useState, type ReactNode } from "react";
 import { motion } from "motion/react";
 import { Check, ChevronDown, LockKeyhole, Sparkles, UserRound } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import type { Lang } from "../../lib/i18n";
 
-const copy: Record<Lang, {
-  eyebrow: string; title: string; description: string; consent: string;
-  login: string; guest: string; choose: string;
-}> = {
-  uz: {
-    eyebrow: "Artisan hashamatli qandolat",
-    title: "Candora olamiga xush kelibsiz",
-    description: "Har bir shirinlik mehr, nafislik va dunyoning eng sara ingrediyentlari bilan tayyorlanadi.",
-    consent: "Men Foydalanish shartlariga roziman, Maxfiylik siyosatini o'qib chiqdim va yoshim 18 dan oshganini tasdiqlayman.",
-    login: "Kirish yoki ro'yxatdan o'tish", guest: "Mehmon sifatida kirish", choose: "Tilni tanlang",
-  },
-  en: {
-    eyebrow: "Artisan luxury confectionery",
-    title: "Welcome to Candora",
-    description: "Handcrafted sweets made with care, elegance, and the finest ingredients from around the world.",
-    consent: "I agree to the Terms of Use, acknowledge the Privacy Policy, and confirm I'm at least 18 years old.",
-    login: "Sign in or create an account", guest: "Continue as a guest", choose: "Choose language",
-  },
-  ru: {
-    eyebrow: "Авторская премиальная кондитерская",
-    title: "Добро пожаловать в Candora",
-    description: "Ручная работа, элегантность и лучшие ингредиенты со всего мира в каждом десерте.",
-    consent: "Я согласен с условиями Candora",
-    login: "Войти или создать аккаунт", guest: "Войти как гость", choose: "Выберите язык",
-  },
+const copy: Record<Lang, { eyebrow: string; title: string; description: string; consent: string; login: string; guest: string; choose: string; }> = {
+  uz: { eyebrow: "Artisan hashamatli qandolat", title: "Candora olamiga xush kelibsiz", description: "Har bir shirinlik mehr, nafislik va dunyoning eng sara ingrediyentlari bilan tayyorlanadi.", consent: "", login: "Kirish yoki ro'yxatdan o'tish", guest: "Mehmon sifatida kirish", choose: "Tilni tanlang" },
+  en: { eyebrow: "Artisan luxury confectionery", title: "Welcome to Candora", description: "Handcrafted sweets made with care, elegance, and the finest ingredients from around the world.", consent: "", login: "Sign in or create an account", guest: "Continue as a guest", choose: "Choose language" },
+  ru: { eyebrow: "Авторская премиальная кондитерская", title: "Добро пожаловать в Candora", description: "Ручная работа, элегантность и лучшие ингредиенты со всего мира в каждом десерте.", consent: "", login: "Войти или создать аккаунт", guest: "Войти как гость", choose: "Выберите язык" }
 };
 
 export default function WelcomeGate({ children }: { children: ReactNode }) {
@@ -39,10 +18,7 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
   const text = copy[lang];
 
   useEffect(() => {
-    if (user) {
-      localStorage.setItem("candora_welcome_seen", "true");
-      setAccepted(true);
-    }
+    if (user) { localStorage.setItem("candora_welcome_seen", "true"); setAccepted(true); }
   }, [user]);
 
   const continueAsGuest = () => {
@@ -66,21 +42,20 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
         <img 
           src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=2000&q=80" 
           alt="Luxury Candora Background" 
-          className="w-full h-full object-cover opacity-35 object-[75%_center]" 
+          className="w-full h-full object-cover opacity-50" 
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/20" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/80" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_50%,hsl(var(--primary)/.15),transparent_50%)] pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent" />
+        <div className="absolute inset-0 bg-background/30" />
       </div>
-      <div className="relative min-h-screen max-w-6xl mx-auto px-6 py-8 flex flex-col">
+      <div className="relative z-10 min-h-screen max-w-6xl mx-auto px-6 py-8 flex flex-col">
         <header className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center"><Sparkles size={17} className="text-primary-foreground" /></div>
             <span className="font-display text-xl font-bold">Candora</span>
           </div>
-          <div className="flex items-center gap-1 rounded-xl bg-card/70 border border-border p-1" aria-label={text.choose}>
+          <div className="flex items-center gap-1 rounded-xl bg-card/70 border border-border p-1">
             {(["uz", "en", "ru"] as Lang[]).map((code) => (
-              <button key={code} onClick={() => setLang(code)} className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${lang === code ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+              <button key={code} onClick={() => setLang(code)} className={\ \}>
                 {code.toUpperCase()}
               </button>
             ))}
@@ -91,36 +66,65 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
           <motion.section initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .6 }}>
             <p className="text-xs uppercase tracking-[.24em] text-primary font-semibold mb-5">{text.eyebrow}</p>
             <h1 className="font-display text-5xl sm:text-7xl leading-[.95] font-bold max-w-2xl">{text.title}</h1>
-            <p className="mt-7 text-muted-foreground max-w-lg text-base leading-relaxed">{text.description}</p>
-            <div className="mt-8 flex flex-wrap gap-3 text-xs text-muted-foreground">
-              <span className="border border-border rounded-full px-3 py-2">2018 yildan beri</span>
-              <span className="border border-border rounded-full px-3 py-2">Toshkent</span>
-              <span className="border border-border rounded-full px-3 py-2">Premium quality</span>
+            <p className="mt-7 text-stone-300 max-w-lg text-base leading-relaxed">{text.description}</p>
+            <div className="mt-8 flex flex-wrap gap-3 text-xs text-stone-300">
+              <span className="border border-border/40 bg-black/20 rounded-full px-3 py-2">2018 yildan beri</span>
+              <span className="border border-border/40 bg-black/20 rounded-full px-3 py-2">Toshkent</span>
+              <span className="border border-border/40 bg-black/20 rounded-full px-3 py-2">Premium quality</span>
             </div>
           </motion.section>
 
-          <motion.section initial={{ opacity: 0, scale: .96 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: .12, duration: .6 }} className="bg-card/85 backdrop-blur border border-border rounded-3xl p-6 sm:p-8 shadow-2xl">
-            <div className="flex items-center gap-3 mb-7"><LockKeyhole size={18} className="text-primary" /><div><p className="font-semibold">Candora</p><p className="text-xs text-muted-foreground">Your sweet account</p></div></div>
-            <button type="button" onClick={() => setTermsOpen(value => !value)} className="w-full flex items-center justify-between text-sm text-primary mb-3 text-left">
+          <motion.section initial={{ opacity: 0, scale: .96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: .5, delay: .1 }} className="bg-[#140b05]/95 border border-border/50 rounded-3xl p-8 lg:p-10 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center gap-3 mb-7">
+              <LockKeyhole size={18} className="text-primary" />
+              <div>
+                <p className="font-semibold">Candora</p>
+                <p className="text-xs text-muted-foreground">Your sweet account</p>
+              </div>
+            </div>
+
+            <button onClick={() => setTermsOpen(!termsOpen)} className="flex items-center justify-between w-full text-left text-sm font-semibold text-primary mb-5 hover:text-primary/80 transition-colors">
               <span>{lang === "uz" ? "Candora shartlarini ko'rish" : lang === "ru" ? "Посмотреть условия Candora" : "View Candora terms"}</span>
-              <ChevronDown size={16} className={termsOpen ? "rotate-180 transition-transform" : "transition-transform"} />
+              <ChevronDown size={16} className={\ \} />
             </button>
             {termsOpen && (
-              <div className="mb-5 rounded-xl border border-border bg-muted/50 p-4 text-xs text-muted-foreground leading-relaxed space-y-2">
-                <p>{lang === "uz" ? "• Mahsulotlar va narxlar buyurtma berishdan oldin ko'rsatiladi." : lang === "ru" ? "• Товары и цены показываются до оформления заказа." : "• Products and prices are shown before checkout."}</p>
-                <p>{lang === "uz" ? "• Buyurtma ma'lumotlari faqat buyurtmani tayyorlash va yetkazish uchun ishlatiladi." : lang === "ru" ? "• Данные заказа используются только для подготовки и доставки." : "• Order details are used only to prepare and deliver your order."}</p>
+              <div className="text-xs text-muted-foreground bg-black/40 rounded-xl p-4 mb-6 space-y-3 border border-border/30">
+                <p>{lang === "uz" ? "• Barcha mahsulotlar 100% halol va tabiiy masalliqlardan tayyorlanadi." : lang === "ru" ? "• Все продукты на 100% халяль и из натуральных ингредиентов." : "• All products are 100% halal and made with natural ingredients."}</p>
                 <p>{lang === "uz" ? "• To'lov va yetkazib berish shartlari checkout bosqichida tasdiqlanadi." : lang === "ru" ? "• Условия оплаты и доставки подтверждаются при оформлении." : "• Payment and delivery terms are confirmed at checkout."}</p>
                 <p>{lang === "uz" ? "• Rozilikni bekor qilish yoki savollar uchun Candora bilan bog'lanishingiz mumkin." : lang === "ru" ? "• Вы можете отозвать согласие или связаться с Candora по вопросам." : "• You can withdraw consent or contact Candora with questions."}</p>
               </div>
             )}
-            <label className="flex items-start gap-3 text-sm text-muted-foreground cursor-pointer mb-6">
-              <input type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} className="mt-1 accent-primary" />
-              <span>{text.consent}</span>
-            </label>
+            
+            <div className="flex items-start gap-4 mb-8 cursor-pointer" onClick={() => setConsent(!consent)}>
+              <div
+                className={\ \}
+              >
+                {consent && <Check size={16} strokeWidth={3} className="text-black" />}
+              </div>
+              <p className="text-sm text-stone-300 leading-relaxed select-none">
+                {lang === "uz" ? (
+                  <>
+                    Men <span className="underline decoration-stone-500 underline-offset-2 hover:text-white transition-colors" onClick={(e) => { e.stopPropagation(); setTermsOpen(true); }}>Foydalanish shartlariga</span> roziman,{" "}
+                    <span className="underline decoration-stone-500 underline-offset-2 hover:text-white transition-colors" onClick={(e) => { e.stopPropagation(); setTermsOpen(true); }}>Maxfiylik siyosatini</span> o'qib chiqdim va yoshim 18 dan oshganini tasdiqlayman.
+                  </>
+                ) : lang === "ru" ? (
+                  <>
+                    Я согласен с <span className="underline decoration-stone-500 underline-offset-2 hover:text-white transition-colors" onClick={(e) => { e.stopPropagation(); setTermsOpen(true); }}>Условиями использования</span>, ознакомлен с{" "}
+                    <span className="underline decoration-stone-500 underline-offset-2 hover:text-white transition-colors" onClick={(e) => { e.stopPropagation(); setTermsOpen(true); }}>Политикой конфиденциальности</span> и подтверждаю, что мне не менее 18 лет.
+                  </>
+                ) : (
+                  <>
+                    I agree to the <span className="underline decoration-stone-500 underline-offset-2 hover:text-white transition-colors" onClick={(e) => { e.stopPropagation(); setTermsOpen(true); }}>Terms of Use</span>, acknowledge the{" "}
+                    <span className="underline decoration-stone-500 underline-offset-2 hover:text-white transition-colors" onClick={(e) => { e.stopPropagation(); setTermsOpen(true); }}>Privacy Policy</span>, and confirm I'm at least 18 years old.
+                  </>
+                )}
+              </p>
+            </div>
+
             <button disabled={!consent} onClick={continueToLogin} className="w-full py-3.5 rounded-2xl bg-primary text-primary-foreground font-semibold disabled:opacity-40 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
               <UserRound size={16} /> {text.login}
             </button>
-            <button disabled={!consent} onClick={continueAsGuest} className="w-full mt-3 py-3.5 rounded-2xl border border-border font-semibold disabled:opacity-40 hover:bg-muted transition-colors">
+            <button disabled={!consent} onClick={continueAsGuest} className="w-full mt-3 py-3.5 rounded-2xl border border-border/50 font-semibold disabled:opacity-40 hover:bg-white/5 transition-colors">
               {text.guest}
             </button>
           </motion.section>
@@ -129,4 +133,3 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
     </div>
   );
 }
-
