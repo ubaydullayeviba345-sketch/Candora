@@ -370,10 +370,10 @@ export default function Home() {
                 <div className="flex gap-0.5">
                   {[1,2,3,4,5].map(i => <Star key={i} size={14} className="fill-amber-400 text-amber-400" />)}
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed flex-1">&ldquo;{tm.text}&rdquo;</p>
+                <p className="text-sm text-muted-foreground leading-relaxed flex-1">&ldquo;{tm.text[lang]}&rdquo;</p>
                 <div className="flex items-center gap-3 pt-3 border-t border-border">
                   <div className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs font-bold">{tm.initials}</div>
-                  <div><p className="text-sm font-semibold">{tm.name}</p><p className="text-xs text-muted-foreground">{tm.role}</p></div>
+                  <div><p className="text-sm font-semibold">{tm.name}</p><p className="text-xs text-muted-foreground">{tm.role[lang]}</p></div>
                 </div>
               </motion.div>
             ))}
