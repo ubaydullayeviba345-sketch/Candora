@@ -62,7 +62,16 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_15%,hsl(var(--primary)/.18),transparent_35%),linear-gradient(135deg,hsl(var(--background)),hsl(var(--card)))]" />
+      <div className="absolute inset-0">
+        <img 
+          src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=2000&q=80" 
+          alt="Luxury Candora Background" 
+          className="w-full h-full object-cover opacity-35 object-[75%_center]" 
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/20" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/80" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_50%,hsl(var(--primary)/.15),transparent_50%)] pointer-events-none" />
+      </div>
       <div className="relative min-h-screen max-w-6xl mx-auto px-6 py-8 flex flex-col">
         <header className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -104,35 +113,10 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
                 <p>{lang === "uz" ? "• Rozilikni bekor qilish yoki savollar uchun Candora bilan bog'lanishingiz mumkin." : lang === "ru" ? "• Вы можете отозвать согласие или связаться с Candora по вопросам." : "• You can withdraw consent or contact Candora with questions."}</p>
               </div>
             )}
-            <div className="flex items-start gap-4 mb-8 cursor-pointer" onClick={() => setConsent(!consent)}>
-              <div
-                className={`flex-shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${
-                  consent
-                    ? "bg-[#c8ff00] border-[#c8ff00]"
-                    : "bg-transparent border-muted-foreground/50 hover:border-[#c8ff00]/50"
-                }`}
-              >
-                {consent && <Check size={16} strokeWidth={3} className="text-black" />}
-              </div>
-              <p className="text-sm text-stone-300 leading-relaxed select-none">
-                {lang === "uz" ? (
-                  <>
-                    Men <span className="underline decoration-stone-500 underline-offset-2 hover:text-white transition-colors" onClick={(e) => { e.stopPropagation(); setTermsOpen(true); }}>Foydalanish shartlariga</span> roziman,{" "}
-                    <span className="underline decoration-stone-500 underline-offset-2 hover:text-white transition-colors" onClick={(e) => { e.stopPropagation(); setTermsOpen(true); }}>Maxfiylik siyosatini</span> o'qib chiqdim va yoshim 18 dan oshganini tasdiqlayman.
-                  </>
-                ) : lang === "ru" ? (
-                  <>
-                    Я согласен с <span className="underline decoration-stone-500 underline-offset-2 hover:text-white transition-colors" onClick={(e) => { e.stopPropagation(); setTermsOpen(true); }}>Условиями использования</span>, ознакомлен с{" "}
-                    <span className="underline decoration-stone-500 underline-offset-2 hover:text-white transition-colors" onClick={(e) => { e.stopPropagation(); setTermsOpen(true); }}>Политикой конфиденциальности</span> и подтверждаю, что мне не менее 18 лет.
-                  </>
-                ) : (
-                  <>
-                    I agree to the <span className="underline decoration-stone-500 underline-offset-2 hover:text-white transition-colors" onClick={(e) => { e.stopPropagation(); setTermsOpen(true); }}>Terms of Use</span>, acknowledge the{" "}
-                    <span className="underline decoration-stone-500 underline-offset-2 hover:text-white transition-colors" onClick={(e) => { e.stopPropagation(); setTermsOpen(true); }}>Privacy Policy</span>, and confirm I'm at least 18 years old.
-                  </>
-                )}
-              </p>
-            </div>
+            <label className="flex items-start gap-3 text-sm text-muted-foreground cursor-pointer mb-6">
+              <input type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} className="mt-1 accent-primary" />
+              <span>{text.consent}</span>
+            </label>
             <button disabled={!consent} onClick={continueToLogin} className="w-full py-3.5 rounded-2xl bg-primary text-primary-foreground font-semibold disabled:opacity-40 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
               <UserRound size={16} /> {text.login}
             </button>
