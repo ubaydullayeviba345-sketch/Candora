@@ -1,4 +1,4 @@
-export interface Product {
+﻿export interface Product {
   id: number;
   name: string;
   category: string;
@@ -341,8 +341,8 @@ export const getProductText = (product: Product, lang: ProductLanguage) => {
   if (lang === "en") return { name: product.name, description: product.description };
   const word = CATEGORY_WORDS[product.category] ?? CATEGORY_WORDS.cakes;
   return lang === "uz"
-    ? { name: `${word.uz} ${product.id}`, description: `Premium masalliqlardan tayyorlangan qo'lda ishlangan ${word.uz.toLowerCase()}.` }
-    : { name: `${word.ru} ${product.id}`, description: `Изысканный ${word.ru.toLowerCase()}, приготовленный вручную из премиальных ингредиентов.` };
+    ? { name: product.name, description: `Premium masalliqlardan tayyorlangan qo'lda ishlangan ${word.uz.toLowerCase()}.` }
+    : { name: product.name, description: `Изысканный ${word.ru.toLowerCase()}, приготовленный вручную из премиальных ингредиентов.` };
 };
 
 export const formatPrice = (price: number, lang: ProductLanguage) => {
@@ -365,36 +365,12 @@ export const getProductTags = (product: Product) => {
 };
 
 export const TESTIMONIALS = [
-  { 
-    name: "Sophia Laurent", 
-    role: { en: "Wedding Client", uz: "To'y mijozi", ru: "Свадебный клиент" }, 
-    initials: "SL", rating: 5,
-    text: {
-      en: "Candora crafted our wedding cake and every macaron was pure poetry. Absolutely world-class.",
-      uz: "Candora bizning to'y tortimizni tayyorladi, har bir makaron chinakam san'at asari edi. Mutlaqo jahon darajasida.",
-      ru: "Candora приготовила наш свадебный торт, и каждый макарон был настоящей поэзией. Абсолютно мировой уровень."
-    }
-  },
-  { 
-    name: "James Whitfield", 
-    role: { en: "Corporate Gifting", uz: "Korporativ mijoz", ru: "Корпоративный клиент" }, 
-    initials: "JW", rating: 5,
-    text: {
-      en: "We order from Candora for every company event. The presentation is impeccable, the taste even better.",
-      uz: "Biz har bir kompaniya tadbiri uchun Candora'dan buyurtma beramiz. Ko'rinishi benuqson, ta'mi esa yanada zo'r.",
-      ru: "Мы заказываем у Candora на каждое корпоративное мероприятие. Подача безупречна, а вкус еще лучше."
-    }
-  },
-  { 
-    name: "Amara Osei", 
-    role: { en: "Regular Customer", uz: "Doimiy mijoz", ru: "Постоянный клиент" }, 
-    initials: "AO", rating: 5,
-    text: {
-      en: "The Rose Macaron Collection is a masterpiece. Candora stands right alongside the very best patisseries in Paris.",
-      uz: "Atirgul makaronlari to'plami – haqiqiy shoh asar. Candora Parijning eng zo'r qandolatxonalaridan qolishmaydi.",
-      ru: "Коллекция макарон с розой — это шедевр. Candora стоит в одном ряду с лучшими кондитерскими Парижа."
-    }
-  },
+  { name: "Sophia Laurent", role: "Wedding Client", initials: "SL", rating: 5,
+    text: "Candora crafted our wedding cake and every macaron was pure poetry. Absolutely world-class." },
+  { name: "James Whitfield", role: "Corporate Gifting", initials: "JW", rating: 5,
+    text: "We order from Candora for every company event. The presentation is impeccable, the taste even better." },
+  { name: "Amara Osei", role: "Regular Customer", initials: "AO", rating: 5,
+    text: "The Rose Macaron Collection is a masterpiece. Candora stands right alongside the very best patisseries in Paris." },
 ];
 
 export const formatPhone = (raw: string): string => {
@@ -436,3 +412,4 @@ export const formatExpiry = (raw: string): string => {
   if (digits.length <= 2) return digits;
   return `${digits.slice(0, 2)}/${digits.slice(2)}`;
 };
+

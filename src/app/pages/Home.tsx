@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import {
@@ -171,7 +171,7 @@ export default function Home() {
                 <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Bestseller</p>
                 <p className="font-semibold text-sm mt-1 leading-snug">Noir Velvet Cake</p>
                 <div className="flex items-center gap-1.5 mt-2"><Stars rating={4.9} size={10} /><span className="text-xs text-muted-foreground">4.9</span></div>
-                <p className="font-bold text-primary mt-1.5">$89</p>
+                <p className="font-bold text-primary mt-1.5">{formatPrice(89, lang)}</p>
               </motion.div>
             </div>
           </motion.div>
@@ -370,10 +370,10 @@ export default function Home() {
                 <div className="flex gap-0.5">
                   {[1,2,3,4,5].map(i => <Star key={i} size={14} className="fill-amber-400 text-amber-400" />)}
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed flex-1">&ldquo;{tm.text[lang]}&rdquo;</p>
+                <p className="text-sm text-muted-foreground leading-relaxed flex-1">&ldquo;{tm.text}&rdquo;</p>
                 <div className="flex items-center gap-3 pt-3 border-t border-border">
                   <div className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs font-bold">{tm.initials}</div>
-                  <div><p className="text-sm font-semibold">{tm.name}</p><p className="text-xs text-muted-foreground">{tm.role[lang]}</p></div>
+                  <div><p className="text-sm font-semibold">{tm.name}</p><p className="text-xs text-muted-foreground">{tm.role}</p></div>
                 </div>
               </motion.div>
             ))}
@@ -386,4 +386,6 @@ export default function Home() {
     </div>
   );
 }
+
+
 
