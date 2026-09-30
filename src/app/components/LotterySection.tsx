@@ -171,8 +171,8 @@ export default function LotterySection() {
         </div>
 
         {/* Input Form */}
-        <form onSubmit={handleJoin} className="max-w-xl mx-auto relative z-10">
-          <div className="flex flex-col sm:flex-row gap-3 p-1.5 rounded-2xl sm:rounded-full bg-[#1c120c]/80 border border-orange-500/30 shadow-2xl focus-within:border-orange-500 transition-all isolate relative">
+        <form onSubmit={handleJoin} className="max-w-xl mx-auto">
+          <div className="flex flex-col sm:flex-row gap-3 p-1.5 rounded-2xl sm:rounded-full bg-black/40 border border-orange-500/30 backdrop-blur-xl shadow-2xl focus-within:border-orange-500 transition-all">
             <input
               type="email"
               required
@@ -183,13 +183,13 @@ export default function LotterySection() {
               }}
               placeholder={t.lottery.emailPlaceholder}
               disabled={loading}
-              className="flex-1 px-5 py-3.5 rounded-xl sm:rounded-full bg-transparent text-white placeholder:text-stone-500 text-sm outline-none font-medium focus:ring-0"
+              className="flex-1 px-5 py-3.5 rounded-xl sm:rounded-full bg-transparent text-white placeholder:text-stone-400 text-sm outline-none font-medium"
             />
 
             <button
               type="submit"
               disabled={loading}
-              className="group relative px-8 py-3.5 rounded-xl sm:rounded-full bg-gradient-to-r from-orange-500 via-amber-600 to-orange-600 text-white font-bold text-sm shadow-md hover:from-orange-400 hover:to-amber-500 transition-all transform active:scale-95 disabled:opacity-70 flex items-center justify-center gap-2"
+              className="group relative px-8 py-3.5 rounded-xl sm:rounded-full bg-gradient-to-r from-orange-500 via-amber-600 to-orange-600 text-white font-bold text-sm shadow-lg shadow-orange-900/40 hover:from-orange-400 hover:to-amber-500 transition-all transform active:scale-95 disabled:opacity-70 flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
@@ -274,16 +274,14 @@ export default function LotterySection() {
 
               {/* Action: Telegram Channel Buttons */}
               <div className="space-y-2.5 mt-5">
-                <a
-                  href="https://t.me/s/candora_uz"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  onClick={openTelegramChannel}
                   className="w-full py-3.5 px-5 rounded-xl bg-gradient-to-r from-[#229ED9] via-[#0088cc] to-[#0077b5] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg hover:shadow-cyan-500/30 transition-all transform active:scale-95 cursor-pointer"
                 >
                   <Send size={16} />
                   <span>{t.lottery.joinTelegram} (@candora_uz)</span>
                   <ExternalLink size={14} className="opacity-80" />
-                </a>
+                </button>
 
                 <button
                   onClick={() => setIsModalOpen(false)}
