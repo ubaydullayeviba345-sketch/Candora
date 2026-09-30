@@ -254,10 +254,127 @@ app.post(`${BASE}/lottery`, async (c) => {
   });
 });
 
-app.get(`${BASE}/admin/lottery-users`, async (c) => {
-  // Return all subscribers
-  const allSubscribers: string[] = (await kv.get("subscribers:all")) ?? [];
-  return c.json({ success: true, subscribers: allSubscribers });
+// ─── TELEGRAM WEBHOOKS ──────────────────────────────────────────────────────────
+
+const PRIVATE_BOT_TOKEN = Deno.env.get("TELEGRAM_BOT_TOKEN") || "8897130943:AAGgnqljWXy8IfPAEmq807tgvg2V2paQxoM";
+const PRIZE_BOT_TOKEN = Deno.env.get("PRIZE_BOT_TOKEN") || "8907374220:AAHKqBBP5YWYEk2XRstWeL9eBp5hyjmQkMg";
+const ADMIN_ID = 7767810012;
+
+async function tg(token: string, method: string, body: any) {
+  return fetch("https://api.telegram.org/bot" + token + "/" + method, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  }).catch(()=>null);
+}
+
+function shuffle(array: any[]) {
+  let currentIndex = array.length, randomIndex;
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+  }
+  return array;
+}
+
+// Candora Private Bot Webhook (Auth Notify)
+app.post(`${BASE}/webhook/private-bot`, async (c) => {
+  const update = await c.req.json().catch(() => ({}));
+  
+  if (update.message && update.message.text) {
+    const userId = update.message.from?.id;
+    if (userId !== ADMIN_ID) {
+      // Rule: Ignore anyone else completely
+      return c.json({ ok: true });
+    }
+    
+    if (update.message.text === "/start") {
+       await tg(PRIVATE_BOT_TOKEN, "sendMessage", {
+         chat_id: ADMIN_ID,
+         text: "Candora Auth Notify Bot (24/7 Cloud)\n\nBu bot faqat tizimga kirgan va ro'yxatdan o'tgan foydalanuvchilar haqida bildirishnoma beradi.",
+       });
+    }
+  }
+  return c.json({ ok: true });
+});
+
+// Candora Prizes Bot Webhook
+app.post(`${BASE}/webhook/prize-bot`, async (c) => {
+  const update = await c.req.json().catch(() => ({}));
+
+  if (update.callback_query) {
+    const cb = update.callback_query;
+    const userId = cb.from.id;
+    if (userId !== ADMIN_ID) return c.json({ ok: true });
+
+    if (cb.data === "draw_prizes") {
+      let users = (await kv.get("subscribers:all")) || [];
+      if (users.length === 0) users = Array.from({length: 100}, (_, i) => "testuser" + (i+1) + "@gmail.com");
+      users = shuffle(users);
+      
+      const mask = (u: string) => u.replace(/(.{3}).*(@.*)/, "$1***$2");
+      const cakeWinners = users.splice(0, 10).map((u: string) => "🎂 " + mask(u));
+      const pastryWinners = users.splice(0, 20).map((u: string) => "🥐 " + mask(u));
+      const exclusiveWinners = users.splice(0, 40).map((u: string) => "🍫 " + mask(u));
+
+      const uz = "🎉 *BU HAFTALIK CANDORA YUTUQLI O'YINI NATIJALARI* 🎉\n\n🎂 *Qimmatroq tort g'oliblari (10 ta):*\n" + (cakeWinners.join("\n") || "Yo'q") + "\n\n🥐 *Mazali pishiriq (20 ta):*\n" + (pastryWinners.join("\n") || "Yo'q") + "\n\n🍫 *Trend shirinlik (40 ta):*\n" + (exclusiveWinners.join("\n") || "Yo'q") + "\n\n🎟 *Qolgan barcha ishtirokchilarga 50 000 so'm bonus!*\n\nQatnashganingiz uchun rahmat,\n*Hurmat bilan, Candora rasmiy.*";
+      const en = "🎉 *CANDORA WEEKLY GIVEAWAY RESULTS* 🎉\n\n🎂 *Premium Cake Winners (10):*\n" + (cakeWinners.join("\n") || "None") + "\n\n🥐 *Pastry Winners (20):*\n" + (pastryWinners.join("\n") || "None") + "\n\n🍫 *Exclusive Sweets (40):*\n" + (exclusiveWinners.join("\n") || "None") + "\n\n🎟 *All other participants get a 50k bonus!*\n\nThank you for participating,\n*Sincerely, Candora Official.*";
+      const ru = "🎉 *РЕЗУЛЬТАТЫ ЕЖЕНЕДЕЛЬНОГО РОЗЫГРЫША CANDORA* 🎉\n\n🎂 *Победители Премиум тортов (10):*\n" + (cakeWinners.join("\n") || "Нет") + "\n\n🥐 *Выпечка (20):*\n" + (pastryWinners.join("\n") || "Нет") + "\n\n🍫 *Эксклюзив (40):*\n" + (exclusiveWinners.join("\n") || "Нет") + "\n\n🎟 *Остальные участники получают бонус 50 000 сум!*\n\nСпасибо за участие,\n*С уважением, официальная Candora.*";
+
+      const finalMessage = uz + "\n\n" + en + "\n\n" + ru;
+      await kv.set("last_draw_result", finalMessage);
+
+      await tg(PRIZE_BOT_TOKEN, "sendMessage", {
+        chat_id: ADMIN_ID,
+        text: "✅ Natijalar tayyor! Quyidagi matnni guruhga yuborishingiz mumkin.",
+        parse_mode: "Markdown",
+        reply_markup: {
+          inline_keyboard: [[{ text: "📢 Guruhga yuborish (Tasdiqlash)", callback_data: "send_to_group" }]]
+        }
+      });
+      await tg(PRIZE_BOT_TOKEN, "sendMessage", { chat_id: ADMIN_ID, text: finalMessage, parse_mode: "Markdown" });
+    }
+
+    if (cb.data === "send_to_group") {
+       await tg(PRIZE_BOT_TOKEN, "sendMessage", {
+         chat_id: ADMIN_ID,
+         text: "⚠️ Guruhga avtomatik yuborish uchun botni o'sha guruhga qo'shib, Admin qilishingiz va menga Guruh ID sini kodda kiritishingiz kerak. Hozircha yuqoridagi tayyor xabarni o'zingiz guruhga Forward qilib yuboring! 🚀"
+       });
+    }
+
+    return c.json({ ok: true });
+  }
+
+  if (update.message && update.message.text) {
+    const userId = update.message.from.id;
+    
+    if (userId !== ADMIN_ID) {
+      await tg(PRIZE_BOT_TOKEN, "sendMessage", {
+        chat_id: userId,
+        text: "🎁 Prizlar (yutuqlar) hali aniqlanmoqda... Natijalar tez orada e'lon qilinadi!"
+      });
+      return c.json({ ok: true });
+    }
+
+    if (update.message.text === "/start" || update.message.text === "/admin") {
+      const allSubscribers = (await kv.get("subscribers:all")) || [];
+      const total = allSubscribers.length;
+
+      await tg(PRIZE_BOT_TOKEN, "sendMessage", {
+        chat_id: ADMIN_ID,
+        text: "🏆 *Candora Prizes Admin Panel* (24/7 Cloud)\n\nHolat: Faol\nJami ishtirokchilar (Email orqali ro'yxatdan o'tganlar): *" + total + "* ta",
+        parse_mode: "Markdown",
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: "🎲 G'oliblarni aniqlash (Barcha tillarda)", callback_data: "draw_prizes" }]
+          ]
+        }
+      });
+    }
+  }
+
+  return c.json({ ok: true });
 });
 
 Deno.serve(app.fetch);
