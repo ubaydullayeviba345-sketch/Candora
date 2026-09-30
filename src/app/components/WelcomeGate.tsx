@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+﻿import { useEffect, useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import { Check, ChevronDown, LockKeyhole, Sparkles, UserRound } from "lucide-react";
 import { useApp } from "../context/AppContext";
@@ -40,11 +40,11 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
       <div className="absolute inset-0">
         <img 
-          src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=2000&q=80" 
+          src="https://images.unsplash.com/photo-1495147466023-ac5c588e2e40?auto=format&fit=crop&w=2000&q=80" 
           alt="Luxury Candora Background" 
-          className="w-full h-full object-cover opacity-50" 
+          className="w-full h-full object-cover opacity-70 blur-sm scale-105" 
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/60 to-background/20" />
         <div className="absolute inset-0 bg-background/30" />
       </div>
       <div className="relative z-10 min-h-screen max-w-6xl mx-auto px-6 py-8 flex flex-col">
@@ -74,7 +74,7 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
             </div>
           </motion.section>
 
-          <motion.section initial={{ opacity: 0, scale: .96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: .5, delay: .1 }} className="bg-[#140b05]/95 border border-border/50 rounded-3xl p-8 lg:p-10 shadow-2xl backdrop-blur-md">
+          <motion.section initial={{ opacity: 0, scale: .96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: .5, delay: .1 }} className="bg-[#140b05]/40 border border-white/10 rounded-3xl p-8 lg:p-10 shadow-2xl backdrop-blur-2xl">
             <div className="flex items-center gap-3 mb-7">
               <LockKeyhole size={18} className="text-primary" />
               <div>
@@ -137,3 +137,4 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
     </div>
   );
 }
+
