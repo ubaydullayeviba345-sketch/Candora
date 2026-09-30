@@ -1,5 +1,5 @@
-﻿import { useEffect, useState, type ReactNode } from "react";
-import { motion } from "motion/react";
+import { useEffect, useState, type ReactNode } from "react";
+import { motion } from "framer-motion";
 import { Check, ChevronDown, LockKeyhole, Sparkles, UserRound } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import type { Lang } from "../../lib/i18n";
@@ -55,7 +55,7 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
           </div>
           <div className="flex items-center gap-1 rounded-xl bg-card/70 border border-border p-1">
             {(["uz", "en", "ru"] as Lang[]).map((code) => (
-              <button key={code} onClick={() => setLang(code)} className={\ \}>
+              <button key={code} onClick={() => setLang(code)} className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${lang === code ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
                 {code.toUpperCase()}
               </button>
             ))}
@@ -85,7 +85,7 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
 
             <button onClick={() => setTermsOpen(!termsOpen)} className="flex items-center justify-between w-full text-left text-sm font-semibold text-primary mb-5 hover:text-primary/80 transition-colors">
               <span>{lang === "uz" ? "Candora shartlarini ko'rish" : lang === "ru" ? "Посмотреть условия Candora" : "View Candora terms"}</span>
-              <ChevronDown size={16} className={\ \} />
+              <ChevronDown size={16} className={`transition-transform duration-300 ${termsOpen ? "rotate-180" : ""}`} />
             </button>
             {termsOpen && (
               <div className="text-xs text-muted-foreground bg-black/40 rounded-xl p-4 mb-6 space-y-3 border border-border/30">
@@ -97,7 +97,11 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
             
             <div className="flex items-start gap-4 mb-8 cursor-pointer" onClick={() => setConsent(!consent)}>
               <div
-                className={\ \}
+                className={`flex-shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${
+                  consent
+                    ? "bg-[#c8ff00] border-[#c8ff00]"
+                    : "bg-transparent border-muted-foreground/50 hover:border-[#c8ff00]/50"
+                }`}
               >
                 {consent && <Check size={16} strokeWidth={3} className="text-black" />}
               </div>
