@@ -12,14 +12,14 @@ const copy: Record<Lang, {
     eyebrow: "Artisan hashamatli qandolat",
     title: "Candora olamiga xush kelibsiz",
     description: "Har bir shirinlik mehr, nafislik va dunyoning eng sara ingrediyentlari bilan tayyorlanadi.",
-    consent: "Candora shartlariga roziman",
+    consent: "Men Foydalanish shartlariga roziman, Maxfiylik siyosatini o'qib chiqdim va yoshim 18 dan oshganini tasdiqlayman.",
     login: "Kirish yoki ro'yxatdan o'tish", guest: "Mehmon sifatida kirish", choose: "Tilni tanlang",
   },
   en: {
     eyebrow: "Artisan luxury confectionery",
     title: "Welcome to Candora",
     description: "Handcrafted sweets made with care, elegance, and the finest ingredients from around the world.",
-    consent: "I agree to Candora's terms",
+    consent: "I agree to the Terms of Use, acknowledge the Privacy Policy, and confirm I'm at least 18 years old.",
     login: "Sign in or create an account", guest: "Continue as a guest", choose: "Choose language",
   },
   ru: {
@@ -104,10 +104,35 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
                 <p>{lang === "uz" ? "• Rozilikni bekor qilish yoki savollar uchun Candora bilan bog'lanishingiz mumkin." : lang === "ru" ? "• Вы можете отозвать согласие или связаться с Candora по вопросам." : "• You can withdraw consent or contact Candora with questions."}</p>
               </div>
             )}
-            <label className="flex items-start gap-3 text-sm text-muted-foreground cursor-pointer mb-6">
-              <input type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} className="mt-1 accent-primary" />
-              <span>{text.consent}</span>
-            </label>
+            <div className="flex items-start gap-4 mb-8 cursor-pointer" onClick={() => setConsent(!consent)}>
+              <div
+                className={`flex-shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${
+                  consent
+                    ? "bg-[#c8ff00] border-[#c8ff00]"
+                    : "bg-transparent border-muted-foreground/50 hover:border-[#c8ff00]/50"
+                }`}
+              >
+                {consent && <Check size={16} strokeWidth={3} className="text-black" />}
+              </div>
+              <p className="text-sm text-stone-300 leading-relaxed select-none">
+                {lang === "uz" ? (
+                  <>
+                    Men <span className="underline decoration-stone-500 underline-offset-2 hover:text-white transition-colors" onClick={(e) => { e.stopPropagation(); setTermsOpen(true); }}>Foydalanish shartlariga</span> roziman,{" "}
+                    <span className="underline decoration-stone-500 underline-offset-2 hover:text-white transition-colors" onClick={(e) => { e.stopPropagation(); setTermsOpen(true); }}>Maxfiylik siyosatini</span> o'qib chiqdim va yoshim 18 dan oshganini tasdiqlayman.
+                  </>
+                ) : lang === "ru" ? (
+                  <>
+                    Я согласен с <span className="underline decoration-stone-500 underline-offset-2 hover:text-white transition-colors" onClick={(e) => { e.stopPropagation(); setTermsOpen(true); }}>Условиями использования</span>, ознакомлен с{" "}
+                    <span className="underline decoration-stone-500 underline-offset-2 hover:text-white transition-colors" onClick={(e) => { e.stopPropagation(); setTermsOpen(true); }}>Политикой конфиденциальности</span> и подтверждаю, что мне не менее 18 лет.
+                  </>
+                ) : (
+                  <>
+                    I agree to the <span className="underline decoration-stone-500 underline-offset-2 hover:text-white transition-colors" onClick={(e) => { e.stopPropagation(); setTermsOpen(true); }}>Terms of Use</span>, acknowledge the{" "}
+                    <span className="underline decoration-stone-500 underline-offset-2 hover:text-white transition-colors" onClick={(e) => { e.stopPropagation(); setTermsOpen(true); }}>Privacy Policy</span>, and confirm I'm at least 18 years old.
+                  </>
+                )}
+              </p>
+            </div>
             <button disabled={!consent} onClick={continueToLogin} className="w-full py-3.5 rounded-2xl bg-primary text-primary-foreground font-semibold disabled:opacity-40 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
               <UserRound size={16} /> {text.login}
             </button>
@@ -120,3 +145,4 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
     </div>
   );
 }
+
