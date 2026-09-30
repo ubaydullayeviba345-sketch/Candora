@@ -40,7 +40,7 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
       <div className="absolute inset-0">
         <img 
-          src="https://images.unsplash.com/photo-1495147466023-ac5c588e2e40?auto=format&fit=crop&w=2000&q=80" 
+          src="https://images.unsplash.com/photo-1549007994-cb92caebd54b?auto=format&fit=crop&w=2000&q=80" 
           alt="Luxury Candora Background" 
           className="w-full h-full object-cover opacity-70 blur-sm scale-105" 
         />
@@ -137,4 +137,5 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
     </div>
   );
 }
+
 
