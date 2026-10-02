@@ -263,7 +263,7 @@ const CATEGORY_GALLERY: Record<string, string[]> = {
 };
 
 PRODUCTS.forEach(product => {
-  product.gallery = [product.image, ...(CATEGORY_GALLERY[product.category] ?? [])];
+  product.gallery = [product.image, ...(EXTRA_IMAGE_POOLS[product.category]?.filter(img => !img.includes(product.image.split("?")[0])).slice(0, 3) ?? [])];
 });
 
 const EXTRA_IMAGE_POOLS: Record<string, string[]> = {
@@ -323,11 +323,7 @@ for (let id = 33; id <= 82; id += 1) {
   });
 }
 
-PRODUCTS.forEach(product => {
-  const start = (product.id - 1) * 3;
-  product.image = dessertImage(start);
-  product.gallery = [dessertImage(start), dessertImage(start + 1), dessertImage(start + 2), dessertImage(start + 3)];
-});
+
 
 const CATEGORY_WORDS: Record<string, Record<ProductLanguage, string>> = {
   cakes: { en: "Cake", uz: "Tort", ru: "Торт" },
@@ -412,5 +408,7 @@ export const formatExpiry = (raw: string): string => {
   if (digits.length <= 2) return digits;
   return `${digits.slice(0, 2)}/${digits.slice(2)}`;
 };
+
+
 
 
