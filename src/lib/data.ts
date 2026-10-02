@@ -326,7 +326,7 @@ for (let id = 33; id <= 82; id += 1) {
 PRODUCTS.forEach(product => {
   const start = (product.id - 1) * 3;
   product.image = dessertImage(start);
-  product.gallery = [dessertImage(start), dessertImage(start + 1), dessertImage(start + 2)];
+  product.gallery = [dessertImage(start), dessertImage(start + 1), dessertImage(start + 2), dessertImage(start + 3)];
 });
 
 const CATEGORY_WORDS: Record<string, Record<ProductLanguage, string>> = {
@@ -412,4 +412,5 @@ export const formatExpiry = (raw: string): string => {
   if (digits.length <= 2) return digits;
   return `${digits.slice(0, 2)}/${digits.slice(2)}`;
 };
+
 

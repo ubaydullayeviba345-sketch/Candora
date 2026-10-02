@@ -1,4 +1,4 @@
-import {
+﻿import {
   createContext, useContext, useState, useEffect, useCallback,
   useRef, type ReactNode,
 } from "react";
@@ -257,7 +257,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const loginWithGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: window.location.origin },
+      
     });
     return error ? { error: error.message } : {};
   };
@@ -265,7 +265,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const loginWithFacebook = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "facebook",
-      options: { redirectTo: window.location.origin },
+      
     });
     return error ? { error: error.message } : {};
   };
@@ -273,7 +273,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const loginWithTwitter = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "twitter",
-      options: { redirectTo: window.location.origin },
+      
     });
     return error ? { error: error.message } : {};
   };
@@ -281,7 +281,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const loginWithDiscord = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "discord",
-      options: { redirectTo: window.location.origin },
+      
     });
     return error ? { error: error.message } : {};
   };
@@ -421,3 +421,4 @@ export function AppProvider({ children }: { children: ReactNode }) {
     </Ctx.Provider>
   );
 }
+
