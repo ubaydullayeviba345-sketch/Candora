@@ -83,8 +83,8 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 7, name: "Wedding Tier Cake", category: "cakes", price: 150,
-    rating: 5.0, reviews: 42, badge: "Made to Order",
-    image: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&h=600&fit=crop&auto=format",
+      rating: 5.0, reviews: 42, badge: "Made to Order",
+      image: "https://images.unsplash.com/photo-1535141192574-5d4897c12636?w=600&h=600&fit=crop&auto=format",
     description: "Three-tier fondant wedding cake with fresh florals and gold accents",
   },
   {
@@ -242,7 +242,7 @@ export const PRODUCTS: Product[] = [
 const CATEGORY_GALLERY: Record<string, string[]> = {
   cakes: [
     "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=900&h=900&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=900&h=900&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=900&h=900&fit=crop&auto=format",
   ],
   macarons: [
     "https://images.unsplash.com/photo-1558326567-98ae2405596b?w=900&h=900&fit=crop&auto=format",
@@ -265,7 +265,7 @@ const CATEGORY_GALLERY: Record<string, string[]> = {
 const EXTRA_IMAGE_POOLS: Record<string, string[]> = {
   cakes: [
     "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=700&h=700&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=700&h=700&fit=crop&auto=format",
     "https://images.unsplash.com/photo-1602351447937-745cb720612f?w=700&h=700&fit=crop&auto=format",
     "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=700&h=700&fit=crop&auto=format",
   ],
@@ -415,6 +415,11 @@ PRODUCTS.forEach(product => {
     product.gallery = [product.image, ...(EXTRA_IMAGE_POOLS[product.category]?.filter(img => !img.includes(product.image.split("?")[0])).slice(0, 3) ?? [])];
   }
 });
+
+
+
+
+
 
 
 
