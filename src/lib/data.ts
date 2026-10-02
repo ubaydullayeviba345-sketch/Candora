@@ -1,4 +1,4 @@
-export interface Product {
+﻿export interface Product {
   id: number;
   name: string;
   category: string;
@@ -14,674 +14,414 @@ export interface Product {
 
 export type ProductLanguage = "en" | "uz" | "ru";
 
+const DESSERT_IMAGE_POOL = [
+  "photo-1578985545062-69928b1d9587", "photo-1558326567-98ae2405596b", "photo-1531594652722-292a43e752b4",
+  "photo-1486427944299-d1955d23e34d", "photo-1549007994-cb92caebd54b", "photo-1571506165871-ee72a35bc9d4",
+  "photo-1628661477251-7938a1a967cd", "photo-1571115177098-24ec42ed204d", "photo-1565958011703-44f9829ba187",
+  "photo-1519915028121-7d3463d20b13", "photo-1464305795204-6f5bbfc7fb81", "photo-1602351447937-745cb720612f",
+  "photo-1533134242443-d4fd215305ad", "photo-1571877227200-a0d98ea607e9", "photo-1519869325930-281384150729",
+  "photo-1606890737304-57a1ca8a5b62", "photo-1569864358642-9d1684040f43", "photo-1578314675249-a6910f80cc4e",
+  "photo-1548907040-4d42fcaa3c5c", "photo-1606312619070-d48b4c652a52", "photo-1551024506-0bccd828d307",
+  "photo-1551024601-bec78aea704b", "photo-1599785209707-a456fc1337bb", "photo-1550617931-e17a7b70dce2",
+  "photo-1558301211-0d8c8ddee6ec", "photo-1588195538326-c5b1e9f80a1b", "photo-1579954115545-a95591f28bfc",
+  "photo-1505253716362-afaea1d3d1af", "photo-1559622214-f8a9850965bb", "photo-1488477181946-6428a0291777",
+  "photo-1587314168485-3236d6710814", "photo-1586985289688-ca3cf47d3e6e",
+];
+
+const dessertImage = (index: number) =>
+  `https://images.unsplash.com/${DESSERT_IMAGE_POOL[index % DESSERT_IMAGE_POOL.length]}?auto=format&fit=crop&w=700&h=700&q=85`;
+
+export interface CartItem extends Product {
+  quantity: number;
+}
+
 export const CATEGORIES = [
-  { id: "all", label: { en: "All", uz: "Barchasi", ru: "Все" } },
-  { id: "chocolate", label: { en: "Chocolate", uz: "Shokolad", ru: "Шоколад" } },
-  { id: "cakes", label: { en: "Cakes", uz: "Tortlar", ru: "Торты" } },
-  { id: "patisserie", label: { en: "Pâtisserie", uz: "Pishiriqlar", ru: "Выпечка" } },
-  { id: "desserts", label: { en: "Desserts", uz: "Shirinliklar", ru: "Десерты" } },
-  { id: "gifts", label: { en: "Gifts", uz: "Sovg'alar", ru: "Подарки" } }
+  { id: "all", key: "all" as const },
+  { id: "cakes", key: "cakes" as const },
+  { id: "macarons", key: "macarons" as const },
+  { id: "chocolate", key: "chocolate" as const },
+  { id: "gifts", key: "gifts" as const },
+  { id: "seasonal", key: "seasonal" as const },
 ];
 
 export const PRODUCTS: Product[] = [
   {
-    id: 1,
-    name: "24K Gold Signature Chocolate Box",
-    category: "chocolate",
-    price: 85,
-    rating: 4.7,
-    reviews: 102,
-    badge: "Bestseller",
-    image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1558326567-98ae2405596b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1531594652722-292a43e752b4?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium chocolate 24k gold signature chocolate box."
+    id: 1, name: "Noir Velvet Cake", category: "cakes", price: 45, originalPrice: 60,
+    rating: 4.9, reviews: 124, badge: "Bestseller",
+    image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&h=600&fit=crop&auto=format",
+    description: "Dark chocolate layers with velvet ganache and 24K gold dust finish",
   },
   {
-    id: 2,
-    name: "Dark Chocolate Truffle Collection",
-    category: "chocolate",
-    price: 40,
-    rating: 4.8,
-    reviews: 173,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1558326567-98ae2405596b?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1558326567-98ae2405596b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1531594652722-292a43e752b4?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium chocolate dark chocolate truffle collection."
+    id: 2, name: "Rose Macaron Collection", category: "macarons", price: 18,
+    rating: 4.8, reviews: 89, badge: "New",
+    image: "https://images.unsplash.com/photo-1558326567-98ae2405596b?w=600&h=600&fit=crop&auto=format",
+    description: "Assorted rose-flavored French macarons in a silk-lined gift box",
   },
   {
-    id: 3,
-    name: "Pistachio Praline Collection",
-    category: "chocolate",
-    price: 35,
-    rating: 4.7,
-    reviews: 126,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1531594652722-292a43e752b4?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1531594652722-292a43e752b4?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1558326567-98ae2405596b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium chocolate pistachio praline collection."
+    id: 3, name: "Pastel Macaron Tower", category: "macarons", price: 20,
+    rating: 5.0, reviews: 56, badge: "Limited",
+    image: "https://images.unsplash.com/photo-1531594652722-292a43e752b4?w=600&h=600&fit=crop&auto=format",
+    description: "A 24-piece tower of hand-crafted macarons in seasonal flavors",
   },
   {
-    id: 4,
-    name: "Salted Caramel Truffle Box",
-    category: "chocolate",
-    price: 30,
-    rating: 4.9,
-    reviews: 54,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1558326567-98ae2405596b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1531594652722-292a43e752b4?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium chocolate salted caramel truffle box."
+    id: 4, name: "Velvet Cupcake Set", category: "cakes", price: 15,
+    rating: 4.7, reviews: 203, badge: null,
+    image: "https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=600&h=600&fit=crop&auto=format",
+    description: "Six premium cupcakes with Swiss meringue buttercream and berry compote",
   },
   {
-    id: 5,
-    name: "Hazelnut Gianduja Collection",
-    category: "chocolate",
-    price: 38,
-    rating: 4.6,
-    reviews: 119,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1558326567-98ae2405596b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1531594652722-292a43e752b4?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium chocolate hazelnut gianduja collection."
+    id: 5, name: "Gold Truffle Box", category: "chocolate", price: 20,
+    rating: 4.9, reviews: 178, badge: "Premium",
+    image: "https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=600&h=600&fit=crop&auto=format",
+    description: "12 single-origin dark chocolate truffles with gold leaf embellishment",
   },
   {
-    id: 6,
-    name: "Raspberry Ruby Chocolate",
-    category: "chocolate",
-    price: 32,
-    rating: 4.9,
-    reviews: 58,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1571506165871-ee72a35bc9d4?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1571506165871-ee72a35bc9d4?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1558326567-98ae2405596b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1531594652722-292a43e752b4?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium chocolate raspberry ruby chocolate."
+    id: 6, name: "Stacked Macaron Trio", category: "macarons", price: 18,
+    rating: 4.8, reviews: 91, badge: null,
+    image: "https://images.unsplash.com/photo-1571506165871-ee72a35bc9d4?w=600&h=600&fit=crop&auto=format",
+    description: "Stacked macaron trio — pistachio, raspberry, and vanilla bean",
   },
   {
-    id: 7,
-    name: "Belgian Chocolate Selection",
-    category: "chocolate",
-    price: 45,
-    rating: 4.8,
-    reviews: 42,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1628661477251-7938a1a967cd?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1628661477251-7938a1a967cd?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1558326567-98ae2405596b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1531594652722-292a43e752b4?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium chocolate belgian chocolate selection."
+    id: 7, name: "Wedding Tier Cake", category: "cakes", price: 150,
+      rating: 5.0, reviews: 42, badge: "Made to Order",
+      image: "https://images.unsplash.com/photo-1535141192574-5d4897c12636?w=600&h=600&fit=crop&auto=format",
+    description: "Three-tier fondant wedding cake with fresh florals and gold accents",
   },
   {
-    id: 8,
-    name: "Dubai Pistachio Chocolate Bar",
-    category: "chocolate",
-    price: 25,
-    rating: 4.8,
-    reviews: 104,
-    badge: "Bestseller",
-    image: "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1558326567-98ae2405596b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1531594652722-292a43e752b4?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium chocolate dubai pistachio chocolate bar."
+    id: 8, name: "Macaron Gift Box", category: "gifts", price: 25, originalPrice: 35,
+    rating: 4.9, reviews: 65, badge: "Sale",
+    image: "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=600&h=600&fit=crop&auto=format",
+    description: "16-piece assorted macaron collection in a luxury ribbon-tied box",
   },
   {
-    id: 9,
-    name: "Caramelized Almond Chocolate",
-    category: "chocolate",
-    price: 28,
-    rating: 4.6,
-    reviews: 150,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1558326567-98ae2405596b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1531594652722-292a43e752b4?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium chocolate caramelized almond chocolate."
+    id: 9, name: "Strawberry Cloud Cake", category: "cakes", price: 38,
+    rating: 4.8, reviews: 87, badge: "New",
+    image: "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&h=600&fit=crop&auto=format",
+    description: "Light vanilla sponge layered with strawberry cream and fresh berries",
   },
   {
-    id: 10,
-    name: "Luxury Chocolate Bonbons",
-    category: "chocolate",
-    price: 55,
-    rating: 4.8,
-    reviews: 158,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1558326567-98ae2405596b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1531594652722-292a43e752b4?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium chocolate luxury chocolate bonbons."
+    id: 10, name: "Pistachio Macaron Set", category: "macarons", price: 16,
+    rating: 4.9, reviews: 74, badge: null,
+    image: "https://images.unsplash.com/photo-1571506165871-ee72a35bc9d4?w=600&h=600&fit=crop&auto=format",
+    description: "Delicate pistachio macarons finished with a smooth French buttercream",
   },
   {
-    id: 11,
-    name: "Royal Chocolate Cake",
-    category: "cakes",
-    price: 55,
-    rating: 4.8,
-    reviews: 140,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1602351447937-745cb720612f?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium cakes royal chocolate cake."
+    id: 11, name: "Cocoa Truffle Selection", category: "chocolate", price: 22,
+    rating: 4.8, reviews: 112, badge: "Premium",
+    image: "https://images.unsplash.com/photo-1575377427642-087cf684f29d?w=600&h=600&fit=crop&auto=format",
+    description: "Hand-finished dark cocoa truffles in classic and salted caramel flavors",
   },
   {
-    id: 12,
-    name: "Pistachio Raspberry Cake",
-    category: "cakes",
-    price: 48,
-    rating: 4.8,
-    reviews: 67,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1602351447937-745cb720612f?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1602351447937-745cb720612f?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium cakes pistachio raspberry cake."
+    id: 12, name: "Celebration Dessert Box", category: "gifts", price: 35,
+    rating: 5.0, reviews: 38, badge: "Limited",
+    image: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?w=600&h=600&fit=crop&auto=format",
+    description: "A curated gift box of petite cakes, cookies, and chocolate treats",
   },
   {
-    id: 13,
-    name: "Belgian Chocolate Ganache Cake",
-    category: "cakes",
-    price: 50,
-    rating: 4.6,
-    reviews: 169,
-    badge: "New",
-    image: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1602351447937-745cb720612f?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium cakes belgian chocolate ganache cake."
+    id: 13, name: "Hazelnut Praline Cake", category: "cakes", price: 42,
+    rating: 4.9, reviews: 66, badge: null,
+    image: "https://images.unsplash.com/photo-1602351447937-745cb720612f?w=600&h=600&fit=crop&auto=format",
+    description: "Roasted hazelnut sponge with praline cream and chocolate glaze",
   },
   {
-    id: 14,
-    name: "Red Velvet Signature Cake",
-    category: "cakes",
-    price: 45,
-    rating: 4.8,
-    reviews: 63,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1602351447937-745cb720612f?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium cakes red velvet signature cake."
+    id: 14, name: "Lemon Meringue Tart", category: "cakes", price: 25,
+    rating: 4.8, reviews: 51, badge: "New",
+    image: "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=600&h=600&fit=crop&auto=format",
+    description: "Bright lemon curd tart topped with softly toasted meringue",
   },
   {
-    id: 15,
-    name: "Vanilla Madagascar Cake",
-    category: "cakes",
-    price: 40,
-    rating: 5,
-    reviews: 78,
-    badge: "Bestseller",
-    image: "https://images.unsplash.com/photo-1519869325930-281384150729?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1519869325930-281384150729?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1602351447937-745cb720612f?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium cakes vanilla madagascar cake."
+    id: 15, name: "Ruby Berry Cheesecake", category: "cakes", price: 15,
+    rating: 4.9, reviews: 93, badge: null,
+    image: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=600&h=600&fit=crop&auto=format",
+    description: "Silky vanilla cheesecake with ruby berry compote and biscuit base",
   },
   {
-    id: 16,
-    name: "Salted Caramel Cake",
-    category: "cakes",
-    price: 45,
-    rating: 4.7,
-    reviews: 53,
-    badge: "Premium",
-    image: "https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1602351447937-745cb720612f?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium cakes salted caramel cake."
+    id: 16, name: "Pistachio Opera Cake", category: "cakes", price: 16,
+    rating: 5.0, reviews: 44, badge: "Premium",
+    image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600&h=600&fit=crop&auto=format",
+    description: "Elegant pistachio and espresso layers finished with dark chocolate",
   },
   {
-    id: 17,
-    name: "Strawberry Champagne-style Cake",
-    category: "cakes",
-    price: 60,
-    rating: 4.6,
-    reviews: 139,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1569864358642-9d1684040f43?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1569864358642-9d1684040f43?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1602351447937-745cb720612f?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium cakes strawberry champagne-style cake."
+    id: 17, name: "Vanilla Bean Cupcake Box", category: "cakes", price: 15,
+    rating: 4.7, reviews: 119, badge: null,
+    image: "https://images.unsplash.com/photo-1519869325930-281384150729?w=600&h=600&fit=crop&auto=format",
+    description: "Six vanilla bean cupcakes with whipped buttercream rosettes",
   },
   {
-    id: 18,
-    name: "Tiramisu Signature Cake",
-    category: "cakes",
-    price: 52,
-    rating: 4.7,
-    reviews: 87,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1578314675249-a6910f80cc4e?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1578314675249-a6910f80cc4e?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1602351447937-745cb720612f?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium cakes tiramisu signature cake."
+    id: 18, name: "Salted Caramel Cake", category: "cakes", price: 40,
+    rating: 4.8, reviews: 72, badge: "Bestseller",
+    image: "https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=600&h=600&fit=crop&auto=format",
+    description: "Soft caramel cake with sea salt, toffee crunch, and cream frosting",
   },
   {
-    id: 19,
-    name: "Black Forest Premium Cake",
-    category: "cakes",
-    price: 48,
-    rating: 4.9,
-    reviews: 87,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1548907040-4d42fcaa3c5c?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1548907040-4d42fcaa3c5c?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1602351447937-745cb720612f?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium cakes black forest premium cake."
+    id: 19, name: "Parisian Macaron Mix", category: "macarons", price: 16,
+    rating: 4.9, reviews: 138, badge: null,
+    image: "https://images.unsplash.com/photo-1569864358642-9d1684040f43?w=600&h=600&fit=crop&auto=format",
+    description: "A colorful selection of French macarons in six classic flavors",
   },
   {
-    id: 20,
-    name: "Opera Cake",
-    category: "cakes",
-    price: 55,
-    rating: 4.7,
-    reviews: 165,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1602351447937-745cb720612f?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium cakes opera cake."
+    id: 20, name: "Lavender Macaron Box", category: "macarons", price: 18,
+    rating: 4.8, reviews: 47, badge: "Limited",
+    image: "https://images.unsplash.com/photo-1578314675249-a6910f80cc4e?w=600&h=600&fit=crop&auto=format",
+    description: "Floral lavender shells filled with smooth white chocolate ganache",
   },
   {
-    id: 21,
-    name: "Pistachio Croissant",
-    category: "patisserie",
-    price: 8,
-    rating: 4.9,
-    reviews: 131,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1551024506-0bccd828d307?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1551024601-bec78aea704b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1550617931-e17a7b70dce2?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium patisserie pistachio croissant."
+    id: 21, name: "Raspberry Macaron Tower", category: "macarons", price: 75,
+    rating: 5.0, reviews: 31, badge: "Made to Order",
+    image: "https://images.unsplash.com/photo-1614707267537-2b0f7a7e5a5a?w=600&h=600&fit=crop&auto=format",
+    description: "A celebratory tower of raspberry macarons for special occasions",
   },
   {
-    id: 22,
-    name: "Almond Croissant",
-    category: "patisserie",
-    price: 7,
-    rating: 4.9,
-    reviews: 34,
-    badge: "Bestseller",
-    image: "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1551024601-bec78aea704b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1551024506-0bccd828d307?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1550617931-e17a7b70dce2?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium patisserie almond croissant."
+    id: 22, name: "Dark Chocolate Truffle Box", category: "chocolate", price: 22,
+    rating: 4.9, reviews: 104, badge: "Premium",
+    image: "https://images.unsplash.com/photo-1548907040-4d42fcaa3c5c?w=600&h=600&fit=crop&auto=format",
+    description: "Intense dark chocolate truffles dusted with cocoa and gold flakes",
   },
   {
-    id: 23,
-    name: "Chocolate Croissant",
-    category: "patisserie",
-    price: 7,
-    rating: 4.7,
-    reviews: 149,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1551024506-0bccd828d307?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1551024601-bec78aea704b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1550617931-e17a7b70dce2?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium patisserie chocolate croissant."
+    id: 23, name: "Milk Chocolate Bonbons", category: "chocolate", price: 20,
+    rating: 4.8, reviews: 89, badge: null,
+    image: "https://images.unsplash.com/photo-1575377427642-087cf684f29d?w=600&h=600&fit=crop&auto=format",
+    description: "Glossy milk chocolate bonbons with hazelnut and caramel centers",
   },
   {
-    id: 24,
-    name: "Vanilla Éclair",
-    category: "patisserie",
-    price: 9,
-    rating: 4.6,
-    reviews: 65,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1550617931-e17a7b70dce2?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1551024506-0bccd828d307?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1551024601-bec78aea704b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium patisserie vanilla éclair."
+    id: 24, name: "Cocoa Gift Slab", category: "chocolate", price: 15,
+    rating: 4.7, reviews: 58, badge: "New",
+    image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&h=600&fit=crop&auto=format",
+    description: "Hand-finished chocolate slab with roasted nuts and dried berries",
   },
   {
-    id: 25,
-    name: "Pistachio Éclair",
-    category: "patisserie",
-    price: 10,
-    rating: 5,
-    reviews: 48,
-    badge: "New",
-    image: "https://images.unsplash.com/photo-1558301211-0d8c8ddee6ec?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1558301211-0d8c8ddee6ec?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1551024506-0bccd828d307?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1551024601-bec78aea704b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium patisserie pistachio éclair."
+    id: 25, name: "Chocolate Orange Truffles", category: "chocolate", price: 21,
+    rating: 4.9, reviews: 63, badge: null,
+    image: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=600&h=600&fit=crop&auto=format",
+    description: "Dark chocolate truffles infused with candied orange and sea salt",
   },
   {
-    id: 26,
-    name: "Paris-Brest",
-    category: "patisserie",
-    price: 12,
-    rating: 4.9,
-    reviews: 170,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1551024506-0bccd828d307?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1551024601-bec78aea704b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium patisserie paris-brest."
+    id: 26, name: "Afternoon Tea Gift Set", category: "gifts", price: 45,
+    rating: 4.9, reviews: 42, badge: "Premium",
+    image: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?w=600&h=600&fit=crop&auto=format",
+    description: "A refined assortment of petite cakes, macarons, and chocolate treats",
   },
   {
-    id: 27,
-    name: "Fruit Tart",
-    category: "patisserie",
-    price: 15,
-    rating: 4.8,
-    reviews: 85,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1551024506-0bccd828d307?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1551024601-bec78aea704b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium patisserie fruit tart."
+    id: 27, name: "Rose Celebration Box", category: "gifts", price: 32,
+    rating: 4.8, reviews: 36, badge: "New",
+    image: "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=600&h=600&fit=crop&auto=format",
+    description: "A ribbon-tied box of rose macarons and delicate chocolate bonbons",
   },
   {
-    id: 28,
-    name: "Lemon Meringue Tart",
-    category: "patisserie",
-    price: 14,
-    rating: 4.8,
-    reviews: 158,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1551024506-0bccd828d307?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1551024601-bec78aea704b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium patisserie lemon meringue tart."
+    id: 28, name: "Little Birthday Treats", category: "gifts", price: 25,
+    rating: 4.8, reviews: 71, badge: null,
+    image: "https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=600&h=600&fit=crop&auto=format",
+    description: "A cheerful gift assortment of cupcakes, cookies, and mini cakes",
   },
   {
-    id: 29,
-    name: "Chocolate Tart",
-    category: "patisserie",
-    price: 15,
-    rating: 4.9,
-    reviews: 150,
-    badge: "Bestseller",
-    image: "https://images.unsplash.com/photo-1559622214-f8a9850965bb?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1559622214-f8a9850965bb?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1551024506-0bccd828d307?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1551024601-bec78aea704b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium patisserie chocolate tart."
+    id: 29, name: "Autumn Spice Cake", category: "seasonal", price: 35,
+    rating: 4.9, reviews: 29, badge: "Seasonal",
+    image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&h=600&fit=crop&auto=format",
+    description: "Warm spiced cake with cinnamon cream and toasted pecans",
   },
   {
-    id: 30,
-    name: "Mille-Feuille",
-    category: "patisserie",
-    price: 16,
-    rating: 4.9,
-    reviews: 124,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1488477181946-6428a0291777?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1551024506-0bccd828d307?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1551024601-bec78aea704b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium patisserie mille-feuille."
+    id: 30, name: "Winterberry Pavlova", category: "seasonal", price: 82,
+    rating: 4.8, reviews: 24, badge: "Seasonal",
+    image: "https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=600&h=600&fit=crop&auto=format",
+    description: "Crisp meringue, vanilla cream, and jewel-like winter berries",
   },
   {
-    id: 31,
-    name: "Pistachio Raspberry Entremet",
-    category: "desserts",
-    price: 18,
-    rating: 4.8,
-    reviews: 39,
-    badge: "Premium",
-    image: "https://images.unsplash.com/photo-1587314168485-3236d6710814?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1587314168485-3236d6710814?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1558326567-98ae2405596b?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium desserts pistachio raspberry entremet."
+    id: 31, name: "Spring Blossom Tart", category: "seasonal", price: 70,
+    rating: 4.9, reviews: 33, badge: "Limited",
+    image: "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&h=600&fit=crop&auto=format",
+    description: "A light seasonal tart decorated with edible blossoms and berries",
   },
   {
-    id: 32,
-    name: "Mango Passion Fruit Mousse",
-    category: "desserts",
-    price: 16,
-    rating: 4.7,
-    reviews: 51,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1587314168485-3236d6710814?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1558326567-98ae2405596b?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium desserts mango passion fruit mousse."
-  },
-  {
-    id: 33,
-    name: "Chocolate Hazelnut Dome",
-    category: "desserts",
-    price: 18,
-    rating: 4.9,
-    reviews: 101,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1587314168485-3236d6710814?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1558326567-98ae2405596b?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium desserts chocolate hazelnut dome."
-  },
-  {
-    id: 34,
-    name: "Strawberry Vanilla Dome",
-    category: "desserts",
-    price: 15,
-    rating: 5,
-    reviews: 91,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1558326567-98ae2405596b?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1558326567-98ae2405596b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1587314168485-3236d6710814?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium desserts strawberry vanilla dome."
-  },
-  {
-    id: 35,
-    name: "Caramel Praline Dome",
-    category: "desserts",
-    price: 17,
-    rating: 4.6,
-    reviews: 92,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1531594652722-292a43e752b4?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1531594652722-292a43e752b4?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1587314168485-3236d6710814?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium desserts caramel praline dome."
-  },
-  {
-    id: 36,
-    name: "Tiramisu Cup",
-    category: "desserts",
-    price: 12,
-    rating: 4.8,
-    reviews: 165,
-    badge: "Bestseller",
-    image: "https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1587314168485-3236d6710814?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium desserts tiramisu cup."
-  },
-  {
-    id: 37,
-    name: "Pistachio Tiramisu",
-    category: "desserts",
-    price: 14,
-    rating: 4.6,
-    reviews: 128,
-    badge: "New",
-    image: "https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1587314168485-3236d6710814?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium desserts pistachio tiramisu."
-  },
-  {
-    id: 38,
-    name: "Lotus Caramel Dessert Cup",
-    category: "desserts",
-    price: 12,
-    rating: 5,
-    reviews: 39,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1571506165871-ee72a35bc9d4?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1571506165871-ee72a35bc9d4?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1587314168485-3236d6710814?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium desserts lotus caramel dessert cup."
-  },
-  {
-    id: 39,
-    name: "Berry Cheesecake Jar",
-    category: "desserts",
-    price: 10,
-    rating: 4.9,
-    reviews: 87,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1628661477251-7938a1a967cd?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1628661477251-7938a1a967cd?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1587314168485-3236d6710814?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium desserts berry cheesecake jar."
-  },
-  {
-    id: 40,
-    name: "Chocolate Mousse Verrine",
-    category: "desserts",
-    price: 14,
-    rating: 5,
-    reviews: 110,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1587314168485-3236d6710814?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium desserts chocolate mousse verrine."
-  },
-  {
-    id: 41,
-    name: "Candora Signature Box",
-    category: "gifts",
-    price: 65,
-    rating: 4.9,
-    reviews: 31,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1602351447937-745cb720612f?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium gifts candora signature box."
-  },
-  {
-    id: 42,
-    name: "Royal Gift Box",
-    category: "gifts",
-    price: 95,
-    rating: 5,
-    reviews: 85,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1602351447937-745cb720612f?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium gifts royal gift box."
-  },
-  {
-    id: 43,
-    name: "His & Hers Chocolate Set",
-    category: "gifts",
-    price: 80,
-    rating: 4.9,
-    reviews: 100,
-    badge: "Bestseller",
-    image: "https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1602351447937-745cb720612f?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium gifts his & hers chocolate set."
-  },
-  {
-    id: 44,
-    name: "Birthday Luxury Box",
-    category: "gifts",
-    price: 75,
-    rating: 4.8,
-    reviews: 85,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1602351447937-745cb720612f?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1602351447937-745cb720612f?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium gifts birthday luxury box."
-  },
-  {
-    id: 45,
-    name: "Wedding Gift Collection",
-    category: "gifts",
-    price: 120,
-    rating: 4.8,
-    reviews: 159,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium gifts wedding gift collection."
-  },
-  {
-    id: 46,
-    name: "Corporate Premium Box",
-    category: "gifts",
-    price: 150,
-    rating: 4.9,
-    reviews: 51,
-    badge: "Premium",
-    image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium gifts corporate premium box."
-  },
-  {
-    id: 47,
-    name: "Ramadan/Eid Luxury Collection",
-    category: "gifts",
-    price: 110,
-    rating: 4.6,
-    reviews: 110,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1519869325930-281384150729?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1519869325930-281384150729?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium gifts ramadan/eid luxury collection."
-  },
-  {
-    id: 48,
-    name: "New Year Signature Box",
-    category: "gifts",
-    price: 105,
-    rating: 4.9,
-    reviews: 148,
-    badge: null,
-    image: "https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium gifts new year signature box."
-  },
-  {
-    id: 49,
-    name: "Love Collection ❤️",
-    category: "gifts",
-    price: 85,
-    rating: 4.7,
-    reviews: 103,
-    badge: "New",
-    image: "https://images.unsplash.com/photo-1569864358642-9d1684040f43?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1569864358642-9d1684040f43?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium gifts love collection ❤️."
-  },
-  {
-    id: 50,
-    name: "Candora Grand Collection",
-    category: "gifts",
-    price: 250,
-    rating: 4.9,
-    reviews: 112,
-    badge: "Bestseller",
-    image: "https://images.unsplash.com/photo-1578314675249-a6910f80cc4e?w=700&h=700&fit=crop&auto=format",
-    gallery: ["https://images.unsplash.com/photo-1578314675249-a6910f80cc4e?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=700&h=700&fit=crop&auto=format","https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format"],
-    description: "Premium gifts candora grand collection."
+    id: 32, name: "Summer Berry Shortcake", category: "seasonal", price: 38,
+    rating: 5.0, reviews: 46, badge: "Seasonal",
+    image: "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=600&h=600&fit=crop&auto=format",
+    description: "Tender shortcake layered with vanilla cream and summer berries",
   },
 ];
 
-export const TESTIMONIALS = [
-  { id: 1, name: "Aziza K.", rating: 5, comment: { en: "The best cakes in the city!", uz: "Shahardagi eng zo'r tortlar!", ru: "Лучшие торты в городе!" } },
-  { id: 2, name: "Malika Y.", rating: 5, comment: { en: "Amazing chocolate quality.", uz: "Shokolad sifati ajoyib.", ru: "Удивительное качество шоколада." } },
-  { id: 3, name: "Dilshod R.", rating: 5, comment: { en: "Perfect for gifts.", uz: "Sovg'a uchun eng zo'r tanlov.", ru: "Идеально для подарков." } },
+const CATEGORY_GALLERY: Record<string, string[]> = {
+  cakes: [
+    "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=900&h=900&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=900&h=900&fit=crop&auto=format",
+  ],
+  macarons: [
+    "https://images.unsplash.com/photo-1558326567-98ae2405596b?w=900&h=900&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1531594652722-292a43e752b4?w=900&h=900&fit=crop&auto=format",
+  ],
+  chocolate: [
+    "https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=900&h=900&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1575377427642-087cf684f29d?w=900&h=900&fit=crop&auto=format",
+  ],
+  gifts: [
+    "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=900&h=900&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?w=900&h=900&fit=crop&auto=format",
+  ],
+  seasonal: [
+    "https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=900&h=900&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=900&h=900&fit=crop&auto=format",
+  ],
+};
+
+const EXTRA_IMAGE_POOLS: Record<string, string[]> = {
+  cakes: [
+    "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=700&h=700&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1602351447937-745cb720612f?w=700&h=700&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=700&h=700&fit=crop&auto=format",
+  ],
+  macarons: [
+    "https://images.unsplash.com/photo-1558326567-98ae2405596b?w=700&h=700&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1531594652722-292a43e752b4?w=700&h=700&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1569864358642-9d1684040f43?w=700&h=700&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1578314675249-a6910f80cc4e?w=700&h=700&fit=crop&auto=format",
+  ],
+  chocolate: [
+    "https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=700&h=700&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1575377427642-087cf684f29d?w=700&h=700&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=700&h=700&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1548907040-4d42fcaa3c5c?w=700&h=700&fit=crop&auto=format",
+  ],
+  gifts: [
+    "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=700&h=700&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?w=700&h=700&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=700&h=700&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1571506165871-ee72a35bc9d4?w=700&h=700&fit=crop&auto=format",
+  ],
+  seasonal: [
+    "https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?w=700&h=700&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=700&h=700&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=700&h=700&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=700&h=700&fit=crop&auto=format",
+  ],
+};
+
+const extraNames = [
+  "Signature", "Classic", "Royal", "Velvet", "Golden", "Garden", "Paris", "Celebration", "Deluxe", "Artisan",
 ];
+const extraCategories = ["cakes", "macarons", "chocolate", "gifts", "seasonal"];
+
+for (let id = 33; id <= 82; id += 1) {
+  const category = extraCategories[(id - 33) % extraCategories.length];
+  const name = `${extraNames[(id - 33) % extraNames.length]} ${category === "cakes" ? "Cake" : category === "macarons" ? "Macaron Box" : category === "chocolate" ? "Chocolate Selection" : category === "gifts" ? "Sweet Gift Box" : "Seasonal Tart"}`;
+  const pool = EXTRA_IMAGE_POOLS[category];
+  const imageIndex = (id - 33) % pool.length;
+  PRODUCTS.push({
+    id,
+    name,
+    category,
+    price: category === "cakes" ? 35 + (id % 30) : category === "macarons" ? 12 + (id % 15) : category === "chocolate" ? 15 + (id % 15) : 25 + (id % 20),
+    rating: Number((4.6 + ((id % 5) * 0.1)).toFixed(1)),
+    reviews: 24 + ((id * 17) % 180),
+    badge: id % 7 === 0 ? "Limited" : id % 5 === 0 ? "New" : null,
+    image: pool[imageIndex],
+    gallery: [pool[imageIndex], pool[(imageIndex + 1) % pool.length], pool[(imageIndex + 2) % pool.length]],
+    description: `Handcrafted ${category} made with premium ingredients and a refined Candora finish`,
+  });
+}
+
+
 
 const CATEGORY_WORDS: Record<string, Record<ProductLanguage, string>> = {
-  chocolate: { en: "Chocolate", uz: "Shokolad", ru: "Шоколад" },
   cakes: { en: "Cake", uz: "Tort", ru: "Торт" },
-  patisserie: { en: "Pastry", uz: "Pishiriq", ru: "Выпечка" },
-  desserts: { en: "Dessert", uz: "Shirinlik", ru: "Десерт" },
-  gifts: { en: "Gift box", uz: "Sovg'a qutisi", ru: "Подарочная коробка" }
+  macarons: { en: "Macaron", uz: "Makaron", ru: "Макарон" },
+  chocolate: { en: "Chocolate", uz: "Shokolad", ru: "Шоколад" },
+  gifts: { en: "Gift box", uz: "Sovg'a qutisi", ru: "Подарочная коробка" },
+  seasonal: { en: "Seasonal dessert", uz: "Mavsumiy shirinlik", ru: "Сезонный десерт" },
 };
 
 export const getProductText = (product: Product, lang: ProductLanguage) => {
   if (lang === "en") return { name: product.name, description: product.description };
   const word = CATEGORY_WORDS[product.category] ?? CATEGORY_WORDS.cakes;
   return lang === "uz"
-    ? { name: product.name, description: "Premium masalliqlardan tayyorlangan eksklyuziv " + word.uz.toLowerCase() + "." }
-    : { name: product.name, description: "Эксклюзивный " + word.ru.toLowerCase() + ", приготовленный из премиальных ингредиентов." };
+    ? { name: product.name, description: `Premium masalliqlardan tayyorlangan qo'lda ishlangan ${word.uz.toLowerCase()}.` }
+    : { name: product.name, description: `Изысканный ${word.ru.toLowerCase()}, приготовленный вручную из премиальных ингредиентов.` };
 };
 
 export const formatPrice = (price: number, lang: ProductLanguage) => {
-  if (lang === "uz") return (new Intl.NumberFormat("uz-UZ").format(price * 12500)) + " so'm";
-  if (lang === "ru") return (new Intl.NumberFormat("ru-RU").format(price * 90)) + " ₽";
-  return "$" + price;
+  if (lang === "uz") {
+    return `${new Intl.NumberFormat("uz-UZ").format(price * 12500)} so'm`;
+  }
+  if (lang === "ru") {
+    return `${new Intl.NumberFormat("ru-RU").format(price * 90)} ₽`;
+  }
+  return `$${price}`;
 };
 
-export const getProductTags = (product: Product): string[] => {
-  const tags = [product.category];
-  if (product.badge) tags.push(product.badge.toLowerCase());
-  return tags;
+export const getProductTags = (product: Product) => {
+  const tags = new Set<string>([product.category]);
+  if (product.id % 3 === 0 || product.category === "chocolate") tags.add("chocolate");
+  if (product.id % 4 === 0 || product.category === "seasonal") tags.add("seasonal");
+  if (product.id % 5 === 0 || product.category === "macarons") tags.add("vegetarian");
+  if (product.id % 7 === 0) tags.add("gluten-free");
+  return [...tags];
+};
+
+export const TESTIMONIALS = [
+  { name: "Sophia Laurent", role: "Wedding Client", initials: "SL", rating: 5,
+    text: "Candora crafted our wedding cake and every macaron was pure poetry. Absolutely world-class." },
+  { name: "James Whitfield", role: "Corporate Gifting", initials: "JW", rating: 5,
+    text: "We order from Candora for every company event. The presentation is impeccable, the taste even better." },
+  { name: "Amara Osei", role: "Regular Customer", initials: "AO", rating: 5,
+    text: "The Rose Macaron Collection is a masterpiece. Candora stands right alongside the very best patisseries in Paris." },
+];
+
+export const formatPhone = (raw: string): string => {
+  const digits = raw.replace(/\D/g, "").replace(/^998/, "").slice(0, 9);
+  if (!digits) return "+998 ";
+
+  const parts = [digits.slice(0, 2)];
+  if (digits.length > 2) parts.push(digits.slice(2, 5));
+  if (digits.length > 5) parts.push(digits.slice(5, 7));
+  if (digits.length > 7) parts.push(digits.slice(7, 9));
+
+  return `+998 ${parts.join(" ")}`;
 };
 
 export const normalizePhoneInput = (value: string, caret: number | null = null) => {
   const digits = value.replace(/\D/g, "").replace(/^998/, "").slice(0, 9);
-  let formatted = "";
-  if (digits.length > 0) formatted += "998 ";
-  if (digits.length > 0) formatted += "(" + digits.slice(0, 2);
-  if (digits.length >= 2) formatted += ") ";
-  if (digits.length > 2) formatted += digits.slice(2, 5);
-  if (digits.length >= 5) formatted += " ";
-  if (digits.length > 5) formatted += digits.slice(5, 7);
-  if (digits.length >= 7) formatted += " ";
-  if (digits.length > 7) formatted += digits.slice(7, 9);
-  
-  return { value: formatted, caret: formatted.length };
+  const formatted = formatPhone(digits);
+
+  if (caret === null) {
+    return { value: formatted, caret: formatted.length };
+  }
+
+  const digitsBeforeCaret = value.slice(0, caret).replace(/\D/g, "").replace(/^998/, "").length;
+  const beforeCaret = formatPhone(digits.slice(0, digitsBeforeCaret));
+
+  return {
+    value: formatted,
+    caret: beforeCaret.length,
+  };
 };
 
 export const formatCardNumber = (raw: string): string => {
   const digits = raw.replace(/\D/g, "").slice(0, 16);
-  return digits.replace(/(\d{4})(?=\d)/g, "$1 ").trim();
+  return digits.replace(/(\d{4})(?=\d)/g, "$1 ");
 };
 
 export const formatExpiry = (raw: string): string => {
   const digits = raw.replace(/\D/g, "").slice(0, 4);
   if (digits.length <= 2) return digits;
-  return digits.slice(0, 2) + "/" + digits.slice(2);
+  return `${digits.slice(0, 2)}/${digits.slice(2)}`;
 };
+
+
+
+
+
+
+PRODUCTS.forEach(product => {
+  if (!product.gallery || product.gallery.length === 0) {
+    product.gallery = [product.image, ...(EXTRA_IMAGE_POOLS[product.category]?.filter(img => !img.includes(product.image.split("?")[0])).slice(0, 3) ?? [])];
+  }
+});
+
+
+
+
+
+
+
+
+
+
