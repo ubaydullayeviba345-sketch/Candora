@@ -262,10 +262,6 @@ const CATEGORY_GALLERY: Record<string, string[]> = {
   ],
 };
 
-PRODUCTS.forEach(product => {
-  product.gallery = [product.image, ...(EXTRA_IMAGE_POOLS[product.category]?.filter(img => !img.includes(product.image.split("?")[0])).slice(0, 3) ?? [])];
-});
-
 const EXTRA_IMAGE_POOLS: Record<string, string[]> = {
   cakes: [
     "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format",
@@ -412,3 +408,10 @@ export const formatExpiry = (raw: string): string => {
 
 
 
+
+
+PRODUCTS.forEach(product => {
+  if (!product.gallery || product.gallery.length === 0) {
+    product.gallery = [product.image, ...(EXTRA_IMAGE_POOLS[product.category]?.filter(img => !img.includes(product.image.split("?")[0])).slice(0, 3) ?? [])];
+  }
+});
