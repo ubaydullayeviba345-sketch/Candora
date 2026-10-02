@@ -99,11 +99,11 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
               <div
                 className={`flex-shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${
                   consent
-                    ? "bg-[#c8ff00] border-[#c8ff00]"
-                    : "bg-transparent border-muted-foreground/50 hover:border-[#c8ff00]/50"
+                    ? "bg-primary border-primary"
+                    : "bg-transparent border-muted-foreground/50 hover:border-primary/50"
                 }`}
               >
-                {consent && <Check size={16} strokeWidth={3} className="text-black" />}
+                {consent && <Check size={16} strokeWidth={3} className="text-primary-foreground" />}
               </div>
               <p className="text-sm text-stone-300 leading-relaxed select-none">
                 {lang === "uz" ? (
@@ -137,6 +137,7 @@ export default function WelcomeGate({ children }: { children: ReactNode }) {
     </div>
   );
 }
+
 
 
 
