@@ -242,7 +242,7 @@ export const PRODUCTS: Product[] = [
 const CATEGORY_GALLERY: Record<string, string[]> = {
   cakes: [
     "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=900&h=900&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=900&h=900&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=900&h=900&fit=crop&auto=format",
   ],
   macarons: [
     "https://images.unsplash.com/photo-1558326567-98ae2405596b?w=900&h=900&fit=crop&auto=format",
@@ -265,9 +265,9 @@ const CATEGORY_GALLERY: Record<string, string[]> = {
 const EXTRA_IMAGE_POOLS: Record<string, string[]> = {
   cakes: [
     "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=700&h=700&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=700&h=700&fit=crop&auto=format",
     "https://images.unsplash.com/photo-1602351447937-745cb720612f?w=700&h=700&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=700&h=700&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=700&h=700&fit=crop&auto=format",
   ],
   macarons: [
     "https://images.unsplash.com/photo-1558326567-98ae2405596b?w=700&h=700&fit=crop&auto=format",
@@ -415,6 +415,8 @@ PRODUCTS.forEach(product => {
     product.gallery = [product.image, ...(EXTRA_IMAGE_POOLS[product.category]?.filter(img => !img.includes(product.image.split("?")[0])).slice(0, 3) ?? [])];
   }
 });
+
+
 
 
 
