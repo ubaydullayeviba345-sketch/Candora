@@ -268,7 +268,7 @@ export default function Home() {
                   <AnimatePresence initial={false} mode="wait">
                     <motion.img
                       key={`${selectedProduct.id}-${selectedImage}`}
-                      initial={{ opacity: 0, x: 32 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -32 }}
+                      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                       transition={{ duration: 0.22 }} src={productGallery[selectedImage]}
                       alt={`${selectedProduct.name} view ${selectedImage + 1}`} onError={event => { event.currentTarget.src = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=700&h=700&q=85"; }} className="absolute inset-0 w-full h-full object-cover"
                     />
@@ -286,12 +286,7 @@ export default function Home() {
                     </>
                   )}
                 </div>
-                <div className="flex items-center justify-center gap-2 mt-4" aria-label="Product image position">
-                  {productGallery.slice(0, 3).map((image, index) => (
-                    <button key={`${image}-${index}`} onClick={() => setSelectedImage(index)} aria-label={`Show image ${index + 1}`}
-                      className={`h-2.5 rounded-full transition-all ${selectedImage === index ? "w-7 bg-primary" : "w-2.5 bg-muted-foreground/35 hover:bg-muted-foreground/60"}`} />
-                  ))}
-                </div>
+                <div className="flex gap-3 mt-4 overflow-x-auto pb-2 scrollbar-hide">{productGallery.map((image, index) => <button key={image} onClick={() => setSelectedImage(index)} aria-label={`Show image ${index + 1}`} className={`relative w-16 h-16 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${selectedImage === index ? "border-primary" : "border-transparent hover:border-primary/50"}`}><img src={image} alt="" className="w-full h-full object-cover" /></button>)}</div>
               </div>
               <div className="p-6 sm:p-8 flex flex-col justify-center">
                 {selectedProduct.badge && <span className="self-start px-2.5 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold uppercase tracking-wider">{selectedProduct.badge}</span>}
@@ -386,6 +381,7 @@ export default function Home() {
     </div>
   );
 }
+
 
 
 

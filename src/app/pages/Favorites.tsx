@@ -1,4 +1,4 @@
-import { Heart, Trash2, ArrowLeft } from "lucide-react";
+﻿import { Heart, Trash2, ArrowLeft } from "lucide-react";
 import { ArrowRight, ShoppingCart, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
@@ -60,7 +60,7 @@ export default function Favorites() {
                     <button onClick={() => setSelectedImage(index => (index - 1 + gallery.length) % gallery.length)} aria-label="Previous image" className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-background/85 flex items-center justify-center"><ArrowLeft size={16} /></button>
                     <button onClick={() => setSelectedImage(index => (index + 1) % gallery.length)} aria-label="Next image" className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-background/85 flex items-center justify-center"><ArrowRight size={16} /></button>
                   </div>
-                  <div className="flex justify-center gap-2 mt-4">{gallery.slice(0, 3).map((image, index) => <button key={image} onClick={() => setSelectedImage(index)} aria-label={`Show image ${index + 1}`} className={`h-2.5 rounded-full ${selectedImage === index ? "w-7 bg-primary" : "w-2.5 bg-muted-foreground/35"}`} />)}</div>
+                  <div className="flex gap-3 mt-4 overflow-x-auto pb-2 scrollbar-hide">{gallery.map((image, index) => <button key={image} onClick={() => setSelectedImage(index)} aria-label={`Show image ${index + 1}`} className={`relative w-16 h-16 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${selectedImage === index ? "border-primary" : "border-transparent hover:border-primary/50"}`}><img src={image} alt="" className="w-full h-full object-cover" /></button>)}</div>
                 </div>
                 <div className="p-6 sm:p-8 flex flex-col justify-center">
                   <h2 className="font-display text-3xl font-bold">{getProductText(selectedProduct, lang).name}</h2>
@@ -76,3 +76,4 @@ export default function Favorites() {
     </div>
   );
 }
+
